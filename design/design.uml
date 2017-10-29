@@ -1,0 +1,155 @@
+@startuml
+
+title RepCRec 
+
+
+class TransactionManager {
+  @Setter
+  @Getter
+  -int number_of_sites;
+  -int number_of_variables;
+  -HashMap<String, Transaction> transactions;
+  -int current_time;
+  +void __init__(int, int);
+  +bool commitTransaction(String);
+  +void tick();
+  +void begin(int, String);
+  +void beginRO(int, String);
+  +void dump();
+  +void dump(int);
+  +void dump(String);
+  +void write_request(int, String, String, int);
+  -void write_request_even(int, Transaction, String, int);
+  +void end(int, String);
+}
+
+class Site {
+  @Setter
+  @Getter
+  -int last_failure_time;
+  -int id;
+  -SiteStatus status
+  +int get_id();
+  +void __init__(int);
+  +DataManager get_data_manager();
+  +SiteStatus get_status();
+  +void fail();
+  +void recover();
+  +void listen();
+  +void dump_site();
+}
+
+class DataManager {
+  -LockTable lock_table;
+  // Hashmaps for easy searching
+  -HashMap<String, Variable> variables;
+  +void __init__(int);
+  +void add_variable(Variable);
+  +void get_variable(String);
+  +bool has_variable(String);
+  +LockTable get_lock_table();
+  +void fail();
+  +void recover();
+  +bool get_lock(Transaction, LockType, String);
+  +void write_variable(Transaction, String, int);
+  +int read_variable(Transaction, String);
+  +HashMap<String, Variable> get_variables();
+}
+
+class LockTable {
+    -HashMap<Variable, Lock> lock_map;
+    +bool is_locked(Variable);
+    +bool is_read_locked(Variable);
+    +bool is_write_locked(Variable);
+    +bool is_locked_by_transaction(Transaction, Variable, LockType);
+    +bool free(Variable);
+}
+
+
+class Lock {
+  -LockType lock_type;
+  -Transaction transaction;
+  +Transaction get_transaction();
+  +void set_transaction(Transaction);
+  +LockType get_type();
+  +void set_type(LockType);
+}
+
+enum LockType {
+    READ;
+    WRITE;
+}
+
+class Transaction {
+  @Setter
+  @Getter
+  -HashMap<String, int> uncommited_variables;
+  -List<Site> sites_accessed;
+  -int id;
+  -String name;
+  -TransactionStatus status;
+  +void __init__(int, String);
+  +TransactionStatus get_status();
+  +void set_status(TransactionStatus);
+  +bool is_read_only();
+  +HashMap<String, int> get_uncommitted_variables();
+  +void clear_uncommitted_variables();
+  +List<Site> get_sites_accessed();
+}
+
+class Variable {
+    @Getter
+    @Setter
+    -int index;
+    -int value;
+    -String name;
+    -int current_site;
+    +void __init__(int, String);
+    +List<int> get_sites();
+    +int get_current_site();
+    +int get_value();
+    +LockType lock_type;
+    +LockType is_locked();
+    +Variable replicate();
+}
+
+class SiteManager {
+    List<Site> sites;
+    void start();
+    void fail(int);
+    void recover(int);
+}
+enum TransactionStatus {
+    RUNNING;
+    WAITING;
+    ABORTED;
+    COMMITED;
+}
+
+enum SiteStatus {
+    UP;
+    DOWN;
+    RECOVERING;
+}
+
+class IO {
+    -FileObject file;
+    +String get_next_instruction();
+    +void print_all_variables(HashMap<String, List<Variable>>);
+    +void print_variable(Variable);
+    +void print_site(String, List<Variable>)
+}
+
+TransactionManager <|-- Transaction
+IO --|> TransactionManager
+Transaction <|-- TransactionStatus
+DataManager <|-- LockTable
+TransactionManager -|> Site
+SiteManager <|-- IO
+SiteManager <|- Site
+Site <|-- DataManager
+Variable --|> DataManager
+SiteStatus --|> Site
+LockTable <|-- Lock 
+LockType -|> Lock
+@enduml
