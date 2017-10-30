@@ -1,3 +1,5 @@
+from tornado.ioloop import IOLoop
+
 from .Site import Site
 
 
@@ -9,7 +11,7 @@ class SiteManager:
 
     def _check_index_sanity(self, index):
         if index > self.num_sites or index <= 0:
-            throw ValueError("Index must be in range %d to %d" %
+            raise ValueError("Index must be in range %d to %d" %
                              (1, self.num_sites))
 
     def get_site(self, index):
@@ -17,8 +19,9 @@ class SiteManager:
         return self.sites[index]
 
     def start(self):
-        for site in self.sites:
+        for site in self.sites[1:]:
             site.listen()
+        IOLoop.current().start()
 
     def fail(self, index):
         self._check_index_sanity(index)
