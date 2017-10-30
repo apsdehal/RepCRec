@@ -1,6 +1,7 @@
 from .enums.LockType import LockType
 from .Transaction import Transaction
 
+
 class Lock:
     def __init__(self, lock_type=None, transaction=None):
         # TODO Think if we need an id for a lock
