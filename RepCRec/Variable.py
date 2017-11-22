@@ -4,18 +4,24 @@ from .enums.LockType import LockType
 
 
 class Variable:
+
     def __init__(self, index, name):
         self.index = index
         self.name = name
-        self.current_side_id = None
+        self.current_site_id = None
         self.value = 0
         self.lock_type = None
 
-    def get_sites(self):
-        return
+    @classmethod
+    def get_sites(id):
+
+        if id % 2 == 0:
+            return 'all'
+        else:
+            return (id % 10) + 1
 
     def get_current_site(self):
-        return self.current_side_id
+        return self.current_site_id
 
     def get_value(self):
         return self.value

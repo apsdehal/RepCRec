@@ -4,6 +4,7 @@ from tornado import web, gen, process, httpserver, netutil
 from .config import config
 from .SiteHandler import SiteHandler
 from .enums.SiteStatus import SiteStatus
+from .DataManager import DataManager
 
 log = logging.getLogger(__name__)
 
@@ -18,6 +19,7 @@ class Site:
         self.variables = []
         self.status = SiteStatus.DOWN
         self.last_failure_time = None
+        self.DataManager = DataManager(self.id)
 
     def set_status(self, status):
         if status in SiteStatus:
@@ -65,5 +67,9 @@ class Site:
         self.set_status(SiteStatus.UP)
 
     def dump_site(self):
+        # TODO: Complete this once we have variables
+        return
+
+    def get_all_variables(self):
         # TODO: Complete this once we have variables
         return
