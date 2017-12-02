@@ -5,11 +5,11 @@ from .enums.LockType import LockType
 
 class Variable:
 
-    def __init__(self, index, name):
+    def __init__(self, index, name, value, current_site_id):
         self.index = index
         self.name = name
-        self.current_site_id = None
-        self.value = 0
+        self.current_site_id = current_site_id
+        self.value = value
         self.lock_type = None
 
     @classmethod

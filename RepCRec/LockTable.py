@@ -1,10 +1,14 @@
-from enums.LockType import LockType
+from .enums.LockType import LockType
 
 
 class LockTable:
-    def __init__(self):
+
+    def __init__(self, num_variables):
         # Variable Index to lock map
         self.lock_map = dict()
+        self.lock_queue = dict()
+        # for i in range(1, num_variables + 1):
+        #     self.lock_map[i] = None
 
     def is_locked(self, variable_index):
         if variable_index not in self.lock_map:

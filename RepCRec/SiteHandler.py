@@ -4,6 +4,7 @@ from .enums.SiteStatus import SiteStatus
 
 
 class SiteHandler(web.RequestHandler):
+
     def initialize(self, variables, index, status):
         self.variables = variables
         self.site_id = index

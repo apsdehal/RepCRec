@@ -17,7 +17,7 @@ class Site:
 
         # Variables will be shifted to DataManager
         self.variables = []
-        self.status = SiteStatus.DOWN
+        self.status = SiteStatus.UP
         self.last_failure_time = None
         self.DataManager = DataManager(self.id)
 
@@ -68,6 +68,11 @@ class Site:
 
     def dump_site(self):
         # TODO: Complete this once we have variables
+
+        for index, variable in self.DataManager.variable_map.items():
+            print(type(variable.value))
+            # print(variable.name + ":" + variable.value + " at site " + self.id)
+
         return
 
     def get_all_variables(self):

@@ -4,6 +4,7 @@ from .Site import Site
 
 
 class SiteManager:
+
     def __init__(self, num_sites):
         # Append None on zero index for easy retreival
         self.num_sites = num_sites

@@ -7,25 +7,35 @@ from .config import config
 from .SiteManager import SiteManager
 from .TransactionManager import TransactionManager
 from .IO import IO
+from .LockTable import LockTable
 
 
 class Main:
 
-    @plac.annotations(
-        file_path=("File name", "positional", None, str),
-        num_sites=("Number of Sites", "option", "n", int),
-        num_variables=("Number of variables", "option", "v", int))
-    def __init__(self, file_path,
-                 num_sites=config['NUM_SITES'],
-                 num_variables=config['NUM_VARIABLES']):
+    # @plac.annotations(
+    #     file_path=("File name", "positional", None, str),
+    #     num_sites=("Number of Sites", "option", "n", int),
+    #     num_variables=("Number of variables", "option", "v", int))
+    # def __init__(self, file_path,
+    #              num_sites=config['NUM_SITES'],
+    #              num_variables=config['NUM_VARIABLES']):
+    def __init__(self, file_path='RepCRec/inputs/input1.txt',
+                 num_variables=20, num_sites=10):
+
         p = Path('.')
         p = p / file_path
+        print(p)
         self.site_manager = SiteManager(num_sites)
-        self.transaction_manager = TransactionManager(num_variables, num_sites)
-        self.io = IO(p, self.site_manager, self.transaction_manager)
+        self.lock_table = LockTable(num_variables)
+
+        self.transaction_manager = TransactionManager(
+            num_variables, num_sites, self.lock_table, self.site_manager)
+
+        self.io = IO(p, self.site_manager,
+                     self.transaction_manager, self.lock_table)
 
     def run(self):
-        self.site_manager.start()
+        # self.site_manager.start()
         self.io.run()
 
 if __name__ == "__main__":

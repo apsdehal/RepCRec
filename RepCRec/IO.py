@@ -14,14 +14,19 @@ class IO:
     FAIL_FUNC = "fail"
     RECOVER_FUNC = "recover"
 
-    def __init__(self, file_name, site_manager, transaction_manager):
+    def __init__(self, file_name, site_manager, transaction_manager,
+                 lock_table):
+        print("Hello")
+
         self.file_name = file_name
         self.line_generator = self._get_line_generator()
         self.site_manager = site_manager
         self.transaction_manager = transaction_manager
+        self.lock_table = lock_table
 
     def get_next_instruction(self):
         line = next(self.line_generator, None)
+        print(line)
 
         if line is None:
             return line
@@ -35,10 +40,14 @@ class IO:
                     yield line
 
     def _process_instruction(self, line):
-        line = line.strip().split(";")
-        instructions = []
-        for instruction in line:
-            instructions.append(Instruction(instruction))
+
+        return(Instruction(line))
+        # line = line.strip().split(";")
+        # instructions = []
+        # for instruction in line:
+        #     instructions.append(Instruction(instruction))
+
+        # return instructions
 
     def print_all_variables(self, data_table):
         return None
@@ -50,34 +59,37 @@ class IO:
         return None
 
     def run(self):
+
         instruction = self.get_next_instruction()
+        # print("The instruction is" +
 
         while instruction != None:
 
-            if instruction.get_instruction_type() == self.BEGIN_FUNC:
-                self.transaction_manager.begin(instruction.get_params())
+            params = list(instruction.get_params())
 
-            elif instruction.get_instruction_type() ==
-                 self.BEGIN_READ_ONLY_FUNC:
+            if instruction.get_instruction_type() == self.BEGIN_FUNC:
+                self.transaction_manager.begin(params)
+
+            elif instruction.get_instruction_type() == \
+                    self.BEGIN_READ_ONLY_FUNC:
 
                 self.transaction_manager.begin_read_only(
-                    instruction.get_params())
+                    params)
 
             elif instruction.get_instruction_type() == self.WRITE_FUNC:
-                params = instruction.get_params()
 
-                if int(params[1][1:]) % 2 == 0:
-                    self.transaction_manager.write_request_even(params)
-                else:
-                    self.transaction_manager.write_request(params)
+                self.transaction_manager.write_request(params)
+                # if int(params[1][1:]) % 2 == 0:
+                #     self.transaction_manager.write_request_even(
+                #         params, lock_table)
+                # else:
 
             elif(instruction.get_instruction_type() == self.DUMP_FUNC):
-                # self.dump(instruction.get_params())
+                # self.dump(params)
+                print("Got here")
 
-                params = instruction.get_params()
-
-                if len(params) == 0:
-                    for site in self.site_manager.sites:
+                if len(params[0]) == 0:
+                    for site in self.site_manager.sites[1:]:
                         site.dump_site()
 
                 elif len(params[0]) == 1:
@@ -101,20 +113,22 @@ class IO:
 
                         variables = site.get_all_variables()
 
-                            for variable in variables:
-                                if variable.name == params[0]:
-                                    print(variable.value)
-
+                        for variable in variables:
+                            if variable.name == params[0]:
+                                print(variable.value)
 
             elif(instruction.get_instruction_type() == self.FAIL_FUNC):
-                self.site_manager.fail(int(instruction.get_params()[0]))
+                self.site_manager.fail(int(params[0]))
 
             elif(instruction.get_instruction_type() == self.RECOVER_FUNC):
-                self.site_manager.recover(int(instruction.get_params()[0]))
+                self.site_manager.recover(int(params[0]))
 
             elif(instruction.get_instruction_type() == self.END_FUNC):
-                # TODO
-                # self.site_manager.fail(int(instruction.get_params()[0]))
 
-            # self.transaction_manager.tick(instruction)
-            # instruction = self.io.get_next_instruction()
+                self.transaction_manager.commit_transaction(params[0])
+                # TODO
+                # self.site_manager.fail(int(params[0]))
+
+                # self.transaction_manager.tick(instruction)
+
+            instruction = self.get_next_instruction()

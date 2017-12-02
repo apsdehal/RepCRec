@@ -2,6 +2,7 @@ from .enums.TransactionStatus import TransactionStatus
 
 
 class Transaction:
+
     def __init__(self, id, name, read_only=False):
         self.status = TransactionStatus.RUNNING
         self.id = id
@@ -20,6 +21,7 @@ class Transaction:
         return self.sites_accessed
 
     def set_status(self, status):
+
         if status in TransactionStatus:
             self.status = status
         else:
