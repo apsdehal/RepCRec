@@ -1,11 +1,19 @@
-from LockTable import LockTable
+from .LockTable import LockTable
+from .Variable import Variable
 
 
 class DataManager:
+
     def __init__(self, id):
         self.site_id = id
-        self.lock_table = LockTable()
+        # self.lock_table = LockTable()
         self.variable_map = dict()
+
+        for i in range(1, 20):
+
+            if i % 2 == 0 or (1 + i % 10) == id:
+                variable = Variable(i, 'x' + str(i), 10 * i, self.site_id)
+                self.variable_map[i] = variable
 
     def add_variable(self, name, variable):
         # TODO: Add check for already existing variable
