@@ -30,17 +30,17 @@ class TransactionManager:
     def commit_transaction(self, name):
 
         uncommited_variables = \
-            self.transaction_map[name].get_uncommitted_variables
+            self.transaction_map[name].get_uncommitted_variables()
 
-        for variable, value in self.transaction_map.items():
+        for variable, value in uncommited_variables.items():
 
             for i in range(1, self.number_of_sites + 1):
 
-                if int(variable[1:]) % 2 == 0 or ((int(variable[1:]) % 10) + 1) == i:
+                if variable % 2 == 0 or ((variable % 10) + 1) == i:
 
                     site = self.site_manager.get_site(i)
                     site.DataManager.variable_map[
-                        int(variable[1:])].value = value
+                        variable].value = value
         return
 
     def tick(self, instruction):

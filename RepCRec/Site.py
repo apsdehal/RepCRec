@@ -5,6 +5,7 @@ from .config import config
 from .SiteHandler import SiteHandler
 from .enums.SiteStatus import SiteStatus
 from .DataManager import DataManager
+from .Transaction import Transaction
 
 log = logging.getLogger(__name__)
 
@@ -70,8 +71,10 @@ class Site:
         # TODO: Complete this once we have variables
 
         for index, variable in self.DataManager.variable_map.items():
-            print(type(variable.value))
-            # print(variable.name + ":" + variable.value + " at site " + self.id)
+
+            if isinstance(variable.value, int):
+                print(variable.name + ":  " +
+                      str(variable.value) + " at site " + str(self.id))
 
         return
 

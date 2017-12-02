@@ -9,7 +9,7 @@ class DataManager:
         # self.lock_table = LockTable()
         self.variable_map = dict()
 
-        for i in range(1, 20):
+        for i in range(1, 21):
 
             if i % 2 == 0 or (1 + i % 10) == id:
                 variable = Variable(i, 'x' + str(i), 10 * i, self.site_id)
