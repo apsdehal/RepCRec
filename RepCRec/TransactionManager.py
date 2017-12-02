@@ -30,17 +30,17 @@ class TransactionManager:
     def commit_transaction(self, name):
 
         uncommited_variables = \
-            self.transaction_map[name].get_uncommitted_variables()
+            self.transaction_map[name].get_uncommitted_variables
 
-        for variable, value in uncommited_variables.items():
+        for variable, value in self.transaction_map.items():
 
             for i in range(1, self.number_of_sites + 1):
 
-                if variable % 2 == 0 or ((variable % 10) + 1) == i:
+                if int(variable[1:]) % 2 == 0 or ((int(variable[1:]) % 10) + 1) == i:
 
                     site = self.site_manager.get_site(i)
                     site.DataManager.variable_map[
-                        variable].value = value
+                        int(variable[1:])].value = value
         return
 
     def tick(self, instruction):
@@ -75,60 +75,31 @@ class TransactionManager:
 
     # def begin(self, name):
     def begin(self, params):
+        current_index = len(self.transaction_map)
 
         self.transaction_map[params[0]] = Transaction(
-            int(params[0][1:]), params[0])
-
-        self.transaction_queue.append(self.transaction_map[params[0]].id)
-        return
+            current_index, params[0])
 
     def begin_read_only(self, params):
-        self.transaction_map[params[0]] = Transaction(
-            int(params[0][1:]), params[0], True)
-        return
+        current_index = len(self.transaction_map)
 
-    # def write_request(self, id, variable, value):
+        self.transaction_map[params[0]] = Transaction(
+            current_index, params[0], True)
+
     def write_request(self, params):
 
-        t_id = params[0]
-        variable = int(params[1][1:])
+        transaction_name = params[0]
+        variable = params[1]
         value = int(params[2])
 
-        if self.transaction_map[t_id].get_status() != \
+        if self.transaction_map[transaction_name].get_status() != \
                 TransactionStatus.RUNNING:
             return
 
-        if self.lock_table.is_locked(variable):
-
-            if self.transaction_queue.index(self.lock_table.lock_map[variable].transaction.id) \
-                    < self.transaction_queue.index(int(t_id[1:])):
-                self.transaction_map[t_id].set_status(
-                    TransactionStatus.ABORTED)
-
-            else:
-
-                self.transaction_map[t_id].set_status(
-                    TransactionStatus.WAITING)
-
-                if variable not in self.lock_table.lock_queue:
-                    self.lock_table.lock_queue[variable] = list()
-
-                self.lock_table.lock_queue[variable].append(t_id)
-
-        else:
-
-            lock = Lock(LockType.WRITE, self.transaction_map[params[0]])
+        if not self.lock_table.is_locked(variable):
+            lock = Lock(LockType.WRITE, self.transaction_map[transaction_name])
             self.lock_table.lock_map[variable] = lock
-
-            self.transaction_map[t_id].uncommitted_variables[variable] = value
-            # for i in range(1, num_sites + 1):
-
-            #     if variable % 2 == 0 or ((variable % 10) + 1) == i:
-
-            #         site = self.site_manager.get_site(i)
-            #         site.DataManager.variable_map[variable].value = value
-
-        return
+            self.transaction_map[transaction_name].uncommitted_variables[variable] = value
 
     def write_request_even(self, params):
 
