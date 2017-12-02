@@ -12,19 +12,17 @@ from .LockTable import LockTable
 
 class Main:
 
-    # @plac.annotations(
-    #     file_path=("File name", "positional", None, str),
-    #     num_sites=("Number of Sites", "option", "n", int),
-    #     num_variables=("Number of variables", "option", "v", int))
-    # def __init__(self, file_path,
-    #              num_sites=config['NUM_SITES'],
-    #              num_variables=config['NUM_VARIABLES']):
-    def __init__(self, file_path='RepCRec/inputs/input1.txt',
-                 num_variables=20, num_sites=10):
+    @plac.annotations(
+        file_path=("File name", "positional", None, str),
+        num_sites=("Number of Sites", "option", "n", int),
+        num_variables=("Number of variables", "option", "v", int))
+    def __init__(self, file_path,
+                 num_sites=config['NUM_SITES'],
+                 num_variables=config['NUM_VARIABLES']):
 
         p = Path('.')
         p = p / file_path
-        print(p)
+
         self.site_manager = SiteManager(num_sites)
         self.lock_table = LockTable(num_variables)
 
@@ -38,10 +36,11 @@ class Main:
         # self.site_manager.start()
         self.io.run()
 
+
 if __name__ == "__main__":
 
     logging.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s',
                         level=config['LOG_LEVEL'])
 
-    main = Main()
+    main = plac.call(Main)
     main.run()
