@@ -40,14 +40,15 @@ class IO:
                     yield line
 
     def _process_instruction(self, line):
+        line = line.strip().split(";")
+        instructions = []
+        for instruction in line:
+            if instruction.find("//") == 0:
+                # Remove comments
+                continue
+            instructions.append(Instruction(instruction))
 
-        return(Instruction(line))
-        # line = line.strip().split(";")
-        # instructions = []
-        # for instruction in line:
-        #     instructions.append(Instruction(instruction))
-
-        # return instructions
+        return instructions
 
     def print_all_variables(self, data_table):
         return None
@@ -60,75 +61,75 @@ class IO:
 
     def run(self):
 
-        instruction = self.get_next_instruction()
+        instructions = self.get_next_instruction()
         # print("The instruction is" +
 
-        while instruction != None:
+        while instructions is not None:
+            for instruction in instructions:
+                params = list(instruction.get_params())
 
-            params = list(instruction.get_params())
+                if instruction.get_instruction_type() == self.BEGIN_FUNC:
+                    self.transaction_manager.begin(params)
 
-            if instruction.get_instruction_type() == self.BEGIN_FUNC:
-                self.transaction_manager.begin(params)
+                elif instruction.get_instruction_type() == \
+                        self.BEGIN_READ_ONLY_FUNC:
 
-            elif instruction.get_instruction_type() == \
-                    self.BEGIN_READ_ONLY_FUNC:
+                    self.transaction_manager.begin_read_only(
+                        params)
 
-                self.transaction_manager.begin_read_only(
-                    params)
+                elif instruction.get_instruction_type() == self.WRITE_FUNC:
 
-            elif instruction.get_instruction_type() == self.WRITE_FUNC:
+                    self.transaction_manager.write_request(params)
+                    # if int(params[1][1:]) % 2 == 0:
+                    #     self.transaction_manager.write_request_even(
+                    #         params, lock_table)
+                    # else:
 
-                self.transaction_manager.write_request(params)
-                # if int(params[1][1:]) % 2 == 0:
-                #     self.transaction_manager.write_request_even(
-                #         params, lock_table)
-                # else:
+                elif(instruction.get_instruction_type() == self.DUMP_FUNC):
+                    # self.dump(params)
+                    print("Got here")
 
-            elif(instruction.get_instruction_type() == self.DUMP_FUNC):
-                # self.dump(params)
-                print("Got here")
+                    if len(params[0]) == 0:
+                        for site in self.site_manager.sites[1:]:
+                            site.dump_site()
 
-                if len(params[0]) == 0:
-                    for site in self.site_manager.sites[1:]:
+                    elif len(params[0]) == 1:
+
+                        site = self.site_manager.get_site(int(params[0]))
                         site.dump_site()
 
-                elif len(params[0]) == 1:
+                    elif len(params[0]) == 2:
 
-                    site = self.site_manager.get_site(int(params[0]))
-                    site.dump_site()
+                        sites = Variable.get_site(int(params[0][1:]))
 
-                elif len(params[0]) == 2:
+                        if sites == 'all':
+                            for site in self.site_manager.sites:
+                                variables = site.get_all_variables()
 
-                    sites = Variable.get_site(int(params[0][1:]))
+                                for variable in variables:
+                                    if variable.name == params[0]:
+                                        print(variable.value)
+                        else:
+                            site = self.site_manager.get_site(int(params[0]))
 
-                    if sites == 'all':
-                        for site in self.site_manager.sites:
                             variables = site.get_all_variables()
 
                             for variable in variables:
                                 if variable.name == params[0]:
                                     print(variable.value)
-                    else:
-                        site = self.site_manager.get_site(int(params[0]))
 
-                        variables = site.get_all_variables()
+                elif(instruction.get_instruction_type() == self.FAIL_FUNC):
+                    self.site_manager.fail(int(params[0]))
 
-                        for variable in variables:
-                            if variable.name == params[0]:
-                                print(variable.value)
+                elif(instruction.get_instruction_type() == self.RECOVER_FUNC):
+                    self.site_manager.recover(int(params[0]))
 
-            elif(instruction.get_instruction_type() == self.FAIL_FUNC):
-                self.site_manager.fail(int(params[0]))
+                elif(instruction.get_instruction_type() == self.END_FUNC):
 
-            elif(instruction.get_instruction_type() == self.RECOVER_FUNC):
-                self.site_manager.recover(int(params[0]))
+                    self.transaction_manager.commit_transaction(params[0])
+                    # TODO
+                    # self.site_manager.fail(int(params[0]))
 
-            elif(instruction.get_instruction_type() == self.END_FUNC):
+                    # self.transaction_manager.tick(instruction)
 
-                self.transaction_manager.commit_transaction(params[0])
-                # TODO
-                # self.site_manager.fail(int(params[0]))
-
-                # self.transaction_manager.tick(instruction)
-
-            instruction = self.get_next_instruction()
+            instructions = self.get_next_instruction()
