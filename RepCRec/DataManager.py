@@ -32,6 +32,9 @@ class DataManager:
         else:
             return False
 
+    def clear_lock(self, lock, variable):
+        self.lock_table.clear_lock(lock, variable)
+
     def get_lock_table(self):
         return self.lock_table
 

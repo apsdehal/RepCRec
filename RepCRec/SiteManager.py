@@ -29,10 +29,7 @@ class SiteManager:
             variable = int(variable[1:])
         sites = Variable.get_sites(variable)
 
-        if sites == 'all':
-            sites = range(1, self.num_sites + 1)
-        else:
-            sites = [sites]
+        sites = self.get_site_range(sites)
 
         flag = 0
         for site in sites:
@@ -50,6 +47,12 @@ class SiteManager:
 
         return flag
 
+    def get_site_range(self, sites):
+        if sites == 'all':
+            sites = range(1, self.num_sites + 1)
+        else:
+            sites = [sites]
+
     def tick(self, instruction):
         if instruction.get_instruction_type() == DUMP_FUNC:
             log.debug("Got here")
@@ -60,11 +63,7 @@ class SiteManager:
 
             elif params[0][0] == 'x':
                 sites = Variable.get_sites(int(params[0][1:]))
-
-                if sites == 'all':
-                    sites = range(1, self.num_sites + 1)
-                else:
-                    sites = [sites]
+                sites = self.get_site_range(sites)
 
                 for site in sites:
                     variables = self.sites[site].get_all_variables()
@@ -82,6 +81,13 @@ class SiteManager:
 
         elif instruction.get_instruction_type() == RECOVER_FUNC:
             self.site_manager.recover(int(params[0]))
+
+    def clear_locks(self, lock, variable_name):
+        sites = Variable.get_sites(variable_name)
+        sites = self.get_site_range(sites)
+
+        for index in sites:
+            site = self.sites[index]
 
     def start(self):
         for site in self.sites[1:]:

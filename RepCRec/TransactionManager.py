@@ -27,7 +27,7 @@ class TransactionManager:
         self.lock_table = lock_table
         self.transaction_queue = list()
         self.site_manager = site_manager
-        self.waiting_transactions = dict()
+        self.blocked_transactions = dict()
 
     def commit_transaction(self, name):
         transaction = self.transaction_map[name]
@@ -44,6 +44,7 @@ class TransactionManager:
                                                      value)
 
     def tick(self, instruction):
+        self.detect_and_clear_deadlocks()
         if instruction.get_instruction_type() == BEGIN_FUNC:
             self.transaction_manager.begin(params)
 
@@ -91,7 +92,43 @@ class TransactionManager:
             lock = self.lock_table.lock_map[variable]
             blocking_transaction = lock.transaction.name
             blocking_transaction = (variable, blocking_transaction)
-            self.waiting_transactions[transaction_name] = blocking_transaction
+            self.blocked_transactions[transaction_name] = blocking_transaction
+
+    def detect_and_clear_deadlocks(self):
+        for x in self.blocked_transactions:
+            visited = dict()
+            current = []
+            index = detect_deadlock(x, visited, current)
+            self.clear_deadlock(current, index)
+
+    def detect_deadlock(self, transaction, visited, current):
+        if transaction in self.blocked_transactions:
+            visited[transaction] = len(current) + 1
+            current.append(transaction)
+
+            block = self.blocked_transactions[transaction][0]
+
+            if block in visited:
+                return visited[block]
+            else:
+                return self.detect_deadlock(block, current)
+        else:
+            return 0
+
+    def clear_deadlock(self, transaction_list, index):
+        transaction_name = transaction_list[index]
+        self.abort(transaction_name)
+
+    def abort(self, name):
+        self.blocked_list.pop(name)
+        transaction = self.transaction_map.pop(name)
+        self.clear_locks(transaction)
+
+    def clear_locks(self, transaction):
+        for var_name, lock in self.lock_table.get_lock_map().items():
+            if lock.transaction == transaction:
+                self.site_manager.clear_locks(lock, var_name)
+                self.lock_table.free(int(var_name[1:]))
 
     def end(self, num, name):
         return

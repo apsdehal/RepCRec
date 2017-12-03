@@ -8,6 +8,9 @@ class LockTable:
         self.lock_map = dict()
         self.lock_queue = dict()
 
+    def get_lock_map(self):
+        return self.lock_map
+
     def set_lock(self, transaction, lock_type, variable_index):
         lock = Lock(lock_type, transaction)
         self.lock_map[variable_index] = lock
@@ -38,6 +41,13 @@ class LockTable:
 
     def free(self, variable_index):
         self.lock_map.pop(variable_index)
+
+    def clear_lock(self, lock, variable):
+        if type(variable) == str:
+            variable = int(variable[1:])
+
+        if self == lock:
+            self.free(variable)
 
     """
     Return 0 if not present

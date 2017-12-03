@@ -44,6 +44,9 @@ class Site:
     def get_lock(self, transaction, typeof, variable):
         return self.data_manager.get_lock(transaction, typeof, variable)
 
+    def clear_lock(self, lock, variable):
+        self.data_manager.clear_lock(lock, variable)
+
     def listen(self):
         # TODO: Actually kill the server instead of sending 500
         # See https://gist.github.com/mywaiting/4643396 mainly server.stop
