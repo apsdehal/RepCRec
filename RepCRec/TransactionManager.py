@@ -28,21 +28,6 @@ class TransactionManager:
         self.waiting_transactions = dict()
         self.variable_values = dict()
 
-    def commit_transaction(self, name):
-
-        transaction = self.transaction_map[name]
-        uncommited_variables = transaction.get_uncommitted_variables()
-
-        for variable, value in uncommited_variables.items():
-
-            for i in range(1, self.number_of_sites + 1):
-                var = int(variable[1:])
-                if var % 2 == 0 or ((var % 10) + 1) == i:
-                    site = self.site_manager.get_site(i)
-                    site.data_manager.write_variable(transaction,
-                                                     variable,
-                                                     value)
-
     def tick(self, instruction):
 
         # self.blocked_transactions = dict()
@@ -52,7 +37,7 @@ class TransactionManager:
 
         params = list(instruction.get_params())
 
-        # print(params, instruction.get_instruction_type())
+        # log.info(params, instruction.get_instruction_type())
 
         if instruction.get_instruction_type() == BEGIN_FUNC:
             self.begin(params)
@@ -70,12 +55,12 @@ class TransactionManager:
         elif instruction.get_instruction_type() == END_FUNC:
             self.commit_transaction(params[0])
         else:
-            print("We have a problem")
+            log.info("We have a problem")
 
     def begin(self, params):
         current_index = len(self.transaction_map)
 
-        print(params[0])
+        log.info(params[0])
         self.transaction_map[str(params[0])] = Transaction(
             current_index, params[0])
 
@@ -97,32 +82,37 @@ class TransactionManager:
         if transaction.get_status() != \
                 TransactionStatus.RUNNING:
             return
+        lock_acquire_status = self.site_manager.get_locks(transaction,
+                                                          LockType.WRITE,
+                                                          variable)
 
-        if self.site_manager.get_locks(transaction,
-                                       LockType.WRITE, variable):
-            print(transaction.name + " got write lock on " + variable)
+        if lock_acquire_status == LockAcquireStatus.GOT_LOCK:
+            log.info(transaction.name + " got write lock on " + variable)
             self.lock_table.set_lock(transaction,
                                      LockType.WRITE, variable)
             transaction.uncommitted_variables[variable] = value
             transaction.set_status(TransactionStatus.RUNNING)
 
-        else:
-
+        elif lock_acquire_status == LockAcquireStatus.ALL_SITES_DOWN:
+            log.info(transaction.name + " is waiting on " + variable)
+            waiting_txn_tuple = (InstructionType.WRITE,
+                                 variable,
+                                 value)
             transaction.set_status(TransactionStatus.WAITING)
-            print(transaction.name + " is waiting for " + variable)
-
+            self.waiting_transactions[transaction.name] = waiting_txn_tuple
+        else:
             lock = self.lock_table.lock_map[variable]
 
             blocking_transaction = lock.transaction.name
 
-            blocking_transaction_tuple = (blocking_transaction,
-                                          InstructionType.WRITE,
-                                          variable,
-                                          value)
-
+            blocking_txn_tuple = (blocking_transaction,
+                                  InstructionType.WRITE,
+                                  variable,
+                                  value)
+            log.info(transaction.name + " is blocked by " +
+                     blocking_transaction + " on " + variable)
             transaction.set_status(TransactionStatus.BLOCKED)
-            self.blocked_transactions[
-                transaction_name] = blocking_transaction_tuple
+            self.blocked_transactions[transaction_name] = blocking_txn_tuple
 
     def read_request(self, params):
 
@@ -138,20 +128,23 @@ class TransactionManager:
         if transaction.is_read_only:
 
             if variable in self.variable_values:
-                log.debug(str(transaction.name) + " reads " + str(variable) +
-                          " having value " + str(self.variable_values[variable]))
+                log.debug(str(transaction.name) + " reads " +
+                          variable + " having value " +
+                          self.variable_values[variable])
 
             else:
 
                 transaction.set_status(TransactionStatus.WAITING)
-                waiting_transaction = (
-                    transaction, InstructionType.READ, variable)
-                self.waiting_transactions[
-                    transaction_name] = waiting_transaction
+                waiting_txn = (transaction,
+                               InstructionType.READ,
+                               variable)
+                self.waiting_transactions[transaction_name] = waiting_txn
 
         else:
 
-            if self.site_manager.get_locks(transaction, LockType.READ, variable):
+            if self.site_manager.get_locks(transaction,
+                                           LockType.READ,
+                                           variable):
 
                 self.lock_table.set_lock(transaction, LockType.READ, variable)
                 transaction.set_status(TransactionStatus.RUNNING)
@@ -161,10 +154,10 @@ class TransactionManager:
             else:
 
                 transaction.set_status(TransactionStatus.WAITING)
-                waiting_transaction = (
-                    transaction, InstructionType.READ, variable)
-                self.waiting_transactions[
-                    transaction_name] = waiting_transaction
+                waiting_txn = (transaction,
+                               InstructionType.READ,
+                               variable)
+                self.waiting_transactions[transaction_name] = waiting_txn
 
         return
 
@@ -225,7 +218,7 @@ class TransactionManager:
 
     def abort(self, name):
 
-        print("aborting " + name)
+        log.info("aborting " + name)
         self.blocked_transactions.pop(name)
         transaction = self.transaction_map.pop(name)
         self.clear_locks(transaction)
@@ -239,8 +232,8 @@ class TransactionManager:
 
             if lock.transaction == transaction:
 
-                print("clearing locks for " +
-                      transaction.name + " variable: " + var_name)
+                log.info("Clearing locks for " + transaction.name +
+                         " variable: " + var_name)
                 self.site_manager.clear_locks(lock, var_name)
                 self.lock_table.free(var_name)
 
@@ -253,7 +246,7 @@ class TransactionManager:
             params = self.waiting_transactions[transaction]
             transaction_obj = self.transaction_map[transaction]
             transaction_obj.set_status(TransactionStatus.RUNNING)
-            # print("TRy waiting  " + str(params[1])  + str(params[2]))
+            # log.info("TRy waiting  " + str(params[1])  + str(params[2]))
 
             if params[0] == InstructionType.WRITE:
                 self.write_request((transaction, params[1], params[2]))
@@ -269,7 +262,23 @@ class TransactionManager:
         for transaction in to_pop:
             self.waiting_transactions.pop(transaction)
 
-    def end(self, num, name):
+    def commit_transaction(self, name):
+        transaction = self.transaction_map[name]
+        uncommited_variables = transaction.get_uncommitted_variables()
+
+        for variable, value in uncommited_variables.items():
+
+            for i in range(1, self.number_of_sites + 1):
+                var = int(variable[1:])
+                if var % 2 == 0 or ((var % 10) + 1) == i:
+                    site = self.site_manager.get_site(i)
+                    site.data_manager.write_variable(transaction,
+                                                     variable,
+                                                     value)
+
+    def end(self, params):
+        self.commit_transaction(params[0])
+        self.clear_locks(params[0])
         return
 
     def fail(self):

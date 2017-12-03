@@ -33,20 +33,26 @@ class SiteManager:
         sites = self.get_site_range(sites)
 
         flag = 0
+        all_sites_down = 1
         for site in sites:
             status = self.sites[site].get_status()
             if status == SiteStatus.DOWN:
                 continue
-
             if status == SiteStatus.RECOVERING and typeof == LockType.READ:
                 continue
 
+            all_sites_down = 0
             state = self.sites[site].get_lock(transaction, typeof, variable)
             if state == 1 and typeof == LockType.READ:
-                return True
+                return LockAcquireStatus.GOT_LOCK
             flag |= state
 
-        return flag
+        if all_sites_down == 1:
+            return LockAcquireStatus.ALL_SITES_DOWN
+        elif flag == 0:
+            return LockAcquireStatus.NO_LOCK
+        else:
+            return LockAcquireStatus.GOT_LOCK
 
     def get_site_range(self, sites):
         if sites == 'all':
