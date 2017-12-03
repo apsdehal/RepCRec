@@ -1,9 +1,11 @@
+import logging
+
 from tornado.ioloop import IOLoop
 
 from .Site import Site
-from .enums.SiteStatus import SiteStatus
 from .Variable import Variable
-from .LockType import LockType
+from .enums.LockType import LockType
+from .enums.SiteStatus import SiteStatus
 from .constants import FAIL_FUNC, DUMP_FUNC, RECOVER_FUNC
 
 log = logging.getLogger(__name__)
@@ -26,11 +28,7 @@ class SiteManager:
         return self.sites[index]
 
     def get_locks(self, transaction, typeof, variable):
-
-        if type(variable) != int:
-            variable = int(variable[1:])
         sites = Variable.get_sites(variable)
-
         sites = self.get_site_range(sites)
 
         flag = 0
@@ -45,58 +43,25 @@ class SiteManager:
             state = self.sites[site].get_lock(transaction, typeof, variable)
             if state == 1 and typeof == LockType.READ:
                 return True
-            flag &= state
+            flag |= state
 
         return flag
 
     def get_site_range(self, sites):
-
-        return
-
-    def get_current_variables(self):
-
-        curr_variables = dict()
-
-        for site in self.sites:
-            
-            if site.get_status() == SiteStatus.UP:
-      
-                variables = site.get_all_variables()
-
-                for variable in variables:
-                    curr_variables[variable.name] = variable.value
-                    # if variable.name == params[0]:
-                    #     log.info(variable.value)
-
-                if len(curr_variables) == 20:
-                    return curr_variables
-
-        return curr_variables
-
-    
-    def get_variable_val(self, params):
-
-        sites = Variable.get_sites(int(params[0][1:]))
-
         if sites == 'all':
             sites = range(1, self.num_sites + 1)
         else:
             sites = [sites]
-
-        for site in sites:
-            
-            variables = self.sites[site].get_all_variables()
-
-            for variable in variables:
-                if variable.name == params[0]:
-                    return variable.value
+        return sites
 
     def tick(self, instruction):
+        params = list(instruction.get_params())
+
         if instruction.get_instruction_type() == DUMP_FUNC:
             log.debug("Got here")
 
             if len(params[0]) == 0:
-                for site in self.site_manager.sites[1:]:
+                for site in self.sites[1:]:
                     site.dump_site()
 
             elif params[0][0] == 'x':
@@ -111,14 +76,14 @@ class SiteManager:
                             log.info(variable.value)
 
             elif len(params[0]) == 2:
-                site = self.site_manager.get_site(int(params[0]))
+                site = self.get_site(int(params[0]))
                 site.dump_site()
 
         elif instruction.get_instruction_type() == FAIL_FUNC:
-            self.site_manager.fail(int(params[0]))
+            self.fail(int(params[0]))
 
         elif instruction.get_instruction_type() == RECOVER_FUNC:
-            self.site_manager.recover(int(params[0]))
+            self.recover(int(params[0]))
 
     def clear_locks(self, lock, variable_name):
         sites = Variable.get_sites(variable_name)

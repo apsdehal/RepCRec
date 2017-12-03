@@ -76,8 +76,8 @@ class Site:
     def dump_site(self):
         # TODO: Complete this once we have variables
 
-        for index, variable in self.data_manager.variable_map.items():
-
+        for index in list(self.data_manager.variable_map):
+            variable = self.data_manager.variable_map[index]
             if isinstance(variable.value, int):
                 print(variable.name + ":  " +
                       str(variable.value) + " at site " + str(self.id))
@@ -85,10 +85,10 @@ class Site:
         return
 
     def get_all_variables(self):
-        
         variables = list()
 
-        for idx, variable in self.data_manager.variable_map.items():
+        for idx in list(self.data_manager.variable_map):
+            variables = self.data_manager.variable_map[idx]
             variables.append(variable)
 
         return variables

@@ -24,7 +24,7 @@ class Main:
         p = p / file_path
 
         self.site_manager = SiteManager(num_sites)
-        self.lock_table = LockTable(num_variables)
+        self.lock_table = LockTable()
 
         self.transaction_manager = TransactionManager(
             num_variables, num_sites, self.lock_table, self.site_manager)

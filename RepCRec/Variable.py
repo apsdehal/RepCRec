@@ -13,7 +13,7 @@ class Variable:
         self.lock_type = None
 
     @classmethod
-    def get_sites(id):
+    def get_sites(self, id):
         if type(id) == str:
             id = int(id[1:])
 

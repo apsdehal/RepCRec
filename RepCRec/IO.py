@@ -56,11 +56,9 @@ class IO:
         instructions = self.get_next_instruction()
 
         while instructions is not None:
-            
+
             for instruction in instructions:
 
-                params = list(instruction.get_params())
-                
                 if instruction.get_instruction_type() in SITE_MANAGER_FUNCS:
                     self.site_manager.tick(instruction)
                 else:

@@ -1,9 +1,10 @@
 from .enums.LockType import LockType
+from .Lock import Lock
 
 
 class LockTable:
 
-    def __init__(self, num_variables):
+    def __init__(self):
         # Variable Index to lock map
         self.lock_map = dict()
         self.lock_queue = dict()
