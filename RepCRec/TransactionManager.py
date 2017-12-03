@@ -92,16 +92,23 @@ class TransactionManager:
         transaction_name = params[0]
         variable = params[1]
         value = int(params[2])
+        transaction = self.lock_table.lock_map[variable].transaction.name
 
-        if self.transaction_map[transaction_name].get_status() != \
+        if transaction.get_status() != \
                 TransactionStatus.RUNNING:
             return
 
-        if self.site_manager.get_lock(variable):
-            self.transaction_map[transaction_name].uncommitted_variables[variable] = value
+        if self.site_manager.get_lock(transaction,
+                                      LockType.WRITE, variable):
+            self.lock_table.set_lock(transaction,
+                                     LockType.WRITE, variable)
+            transaction.uncommitted_variables[variable] = value
         else:
-            self.transaction_map[transaction_name].set_status(TransactionStatus.WAITING)
-            self.waiting_transactions[transaction_name] = variable
+            transaction.set_status(TransactionStatus.WAITING)
+            lock = self.lock_table.lock_map[variable]
+            blocking_transaction = lock.transaction.name
+            blocking_transaction = (variable, blocking_transaction)
+            self.waiting_transactions[transaction_name] = blocking_transaction
 
     def end(self, num, name):
         return
