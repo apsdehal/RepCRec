@@ -5,6 +5,7 @@ from .LockTable import LockTable
 
 from .enums.LockType import LockType
 from .enums.TransactionStatus import TransactionStatus
+from .enums.InstructionType import InstructionType
 from .constants import BEGIN_FUNC, BEGIN_READ_ONLY_FUNC, WRITE_FUNC, READ_FUNC
 
 
@@ -28,6 +29,9 @@ class TransactionManager:
         self.transaction_queue = list()
         self.site_manager = site_manager
         self.blocked_transactions = dict()
+        self.waiting_transactions[block[0]] = (block[0],
+                                               block[1],
+                                               block[2]) = dict()
 
     def commit_transaction(self, name):
         transaction = self.transaction_map[name]
@@ -45,6 +49,8 @@ class TransactionManager:
 
     def tick(self, instruction):
         self.detect_and_clear_deadlocks()
+        self.blocked_to_waiting()
+
         if instruction.get_instruction_type() == BEGIN_FUNC:
             self.transaction_manager.begin(params)
 
@@ -91,7 +97,11 @@ class TransactionManager:
             transaction.set_status(TransactionStatus.WAITING)
             lock = self.lock_table.lock_map[variable]
             blocking_transaction = lock.transaction.name
-            blocking_transaction = (variable, blocking_transaction)
+            blocking_transaction = (blocking_transaction,
+                                    InstructionType.WRITE,
+                                    variable,
+                                    value)
+
             self.blocked_transactions[transaction_name] = blocking_transaction
 
     def detect_and_clear_deadlocks(self):
@@ -127,6 +137,14 @@ class TransactionManager:
                 max_name = name
 
         self.abort(max_name)
+
+    def blocked_to_waiting(self):
+        for key, block in self.blocked_transactions.items():
+            if block[0] not in self.transaction_map:
+                self.waiting_transactions[block[0]] = (block[0],
+                                                       block[1],
+                                                       block[2])
+                self.blocked_transactions.pop(key)
 
     def abort(self, name):
         self.blocked_list.pop(name)
