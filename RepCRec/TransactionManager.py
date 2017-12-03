@@ -5,6 +5,7 @@ from .LockTable import LockTable
 
 from .enums.LockType import LockType
 from .enums.TransactionStatus import TransactionStatus
+from .constants import BEGIN_FUNC, BEGIN_READ_ONLY_FUNC, WRITE_FUNC, READ_FUNC
 
 
 class TransactionManager:
@@ -29,52 +30,34 @@ class TransactionManager:
         self.waiting_transactions = dict()
 
     def commit_transaction(self, name):
-
-        uncommited_variables = \
-            self.transaction_map[name].get_uncommitted_variables
+        transaction = self.transaction_map[name]
+        uncommited_variables = transaction.get_uncommitted_variables()
 
         for variable, value in self.transaction_map.items():
 
             for i in range(1, self.number_of_sites + 1):
-
-                if int(variable[1:]) % 2 == 0 or ((int(variable[1:]) % 10) + 1) == i:
-
+                var = int(variable[1:])
+                if var % 2 == 0 or ((var % 10) + 1) == i:
                     site = self.site_manager.get_site(i)
-                    site.DataManager.variable_map[
-                        int(variable[1:])].value = value
-        return
+                    site.data_manager.write_variable(transaction,
+                                                     variable,
+                                                     value)
 
     def tick(self, instruction):
+        if instruction.get_instruction_type() == BEGIN_FUNC:
+            self.transaction_manager.begin(params)
 
-        if instruction.get_instruction_type() == self.BEGIN_FUNC:
-            self.begin(instruction.get_params())
+        elif instruction.get_instruction_type() == \
+                BEGIN_READ_ONLY_FUNC:
+            self.transaction_manager.begin_read_only(
+                params)
 
-        elif instruction.get_instruction_type() == self.BEGIN_READ_ONLY_FUNC:
-            self.begin_read_only(instruction.get_params())
+        elif instruction.get_instruction_type() == WRITE_FUNC:
+            self.transaction_manager.write_request(params)
 
-        elif(instruction.get_instruction_type() == self.WRITE_FUNC):
-            params = instruction.get_params()
+        elif instruction.get_instruction_type() == END_FUNC:
+            self.transaction_manager.commit_transaction(params[0])
 
-            if int(params[1][1:]) % 2 == 0:
-                self.write_request_even(params)
-            else:
-                self.write_request(params)
-
-        elif(instruction.get_instruction_type() == self.DUMP_FUNC):
-            self.dump(instruction.get_params())
-
-        elif(instruction.get_instruction_type() == self.FAIL_FUNC):
-            self.fail(instruction.get_params())
-
-        elif(instruction.get_instruction_type() == self.RECOVER_FUNC):
-            self.recover(instruction.get_params())
-
-        elif(instruction.get_instruction_type() == self.END_FUNC):
-            self.end(instruction.get_params())
-
-        return
-
-    # def begin(self, name):
     def begin(self, params):
         current_index = len(self.transaction_map)
 

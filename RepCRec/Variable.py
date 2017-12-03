@@ -14,6 +14,8 @@ class Variable:
 
     @classmethod
     def get_sites(id):
+        if type(id) == str:
+            id = int(id[1:])
 
         if id % 2 == 0:
             return 'all'

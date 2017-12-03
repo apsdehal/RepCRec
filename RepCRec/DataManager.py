@@ -14,7 +14,7 @@ class DataManager:
 
             if i % 2 == 0 or (1 + i % 10) == id:
                 variable = Variable(i, 'x' + str(i), 10 * i, self.site_id)
-                self.variable_map[i] = variable
+                self.variable_map['x' + str(i)] = variable
 
     def add_variable(self, name, variable):
         # TODO: Add check for already existing variable
@@ -42,7 +42,8 @@ class DataManager:
         return
 
     def get_lock(self, transaction, lock_type, variable_index):
-        if lock_type == LockType.WRITE and not self.lock_table.is_locked(variable_index):
+        if lock_type == LockType.WRITE and \
+           not self.lock_table.is_locked(variable_index):
             self.lock_table.set_lock(transaction, lock_type, variable_index)
             return True
         elif lock_type == LockType.READ and not self.lock_table.is_write_locked(variable_index):
@@ -52,7 +53,7 @@ class DataManager:
             return False
 
     def write_variable(self, transaction, variable_name, value):
-        return
+        self.variable_map[variable_name].set_value(value)
 
     def read_variable(self, transaction, variable_name):
         return None
