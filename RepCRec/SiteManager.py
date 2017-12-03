@@ -13,10 +13,11 @@ log = logging.getLogger(__name__)
 
 class SiteManager:
 
-    def __init__(self, num_sites):
+    def __init__(self, num_sites, num_variables):
         # Append None on zero index for easy retreival
         self.num_sites = num_sites
         self.sites = [None] + [Site(i) for i in range(1, num_sites + 1)]
+        self.num_variables = num_variables
 
     def _check_index_sanity(self, index):
         if index > self.num_sites or index <= 0:
@@ -54,6 +55,21 @@ class SiteManager:
             sites = [sites]
         return sites
 
+    def get_current_variables(self):
+
+        variable_values = dict()
+
+        for site in self.sites:
+            variables = site.get_all_variables()
+
+            for variable in variables:
+                variable_values[variable.name] = variable.value
+
+            if len(variable_values) == self.num_variables:
+                return variable_values
+
+        return variable_values
+
     def tick(self, instruction):
         params = list(instruction.get_params())
 
@@ -86,11 +102,13 @@ class SiteManager:
             self.recover(int(params[0]))
 
     def clear_locks(self, lock, variable_name):
+
         sites = Variable.get_sites(variable_name)
         sites = self.get_site_range(sites)
 
         for index in sites:
             site = self.sites[index]
+            site.clear_lock(lock, variable_name)
 
     def start(self):
         for site in self.sites[1:]:

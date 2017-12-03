@@ -23,7 +23,7 @@ class Main:
         p = Path('.')
         p = p / file_path
 
-        self.site_manager = SiteManager(num_sites)
+        self.site_manager = SiteManager(num_sites, num_variables)
         self.lock_table = LockTable()
 
         self.transaction_manager = TransactionManager(

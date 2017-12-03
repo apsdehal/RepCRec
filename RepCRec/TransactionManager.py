@@ -26,6 +26,7 @@ class TransactionManager:
         self.site_manager = site_manager
         self.blocked_transactions = dict()
         self.waiting_transactions = dict()
+        self.variable_values = dict()
 
     def commit_transaction(self, name):
         transaction = self.transaction_map[name]
@@ -42,12 +43,15 @@ class TransactionManager:
                                                      value)
 
     def tick(self, instruction):
-        self.blocked_transactions = dict()
+
+        # self.blocked_transactions = dict()
         self.detect_and_clear_deadlocks()
         self.blocked_to_waiting()
         self.try_waiting()
 
         params = list(instruction.get_params())
+
+        # print(params, instruction.get_instruction_type())
 
         if instruction.get_instruction_type() == BEGIN_FUNC:
             self.begin(params)
@@ -64,11 +68,14 @@ class TransactionManager:
 
         elif instruction.get_instruction_type() == END_FUNC:
             self.commit_transaction(params[0])
+        else:
+            print("We have a problem")
 
     def begin(self, params):
         current_index = len(self.transaction_map)
 
-        self.transaction_map[params[0]] = Transaction(
+        print(params[0])
+        self.transaction_map[str(params[0])] = Transaction(
             current_index, params[0])
 
     def begin_read_only(self, params):
@@ -83,6 +90,7 @@ class TransactionManager:
         transaction_name = params[0]
         variable = params[1]
         value = int(params[2])
+
         transaction = self.transaction_map[transaction_name]
 
         if transaction.get_status() != \
@@ -91,24 +99,69 @@ class TransactionManager:
 
         if self.site_manager.get_locks(transaction,
                                        LockType.WRITE, variable):
-            print(variable)
+            print(transaction.name + " got write lock on " + variable)
             self.lock_table.set_lock(transaction,
                                      LockType.WRITE, variable)
             transaction.uncommitted_variables[variable] = value
             transaction.set_status(TransactionStatus.RUNNING)
+
         else:
 
             transaction.set_status(TransactionStatus.WAITING)
-            print(variable)
+            print(transaction.name + " is waiting for " + variable)
+            
             lock = self.lock_table.lock_map[variable]
+
             blocking_transaction = lock.transaction.name
-            blocking_transaction = (blocking_transaction,
+
+            blocking_transaction_tuple = (blocking_transaction,
                                     InstructionType.WRITE,
                                     variable,
                                     value)
-            transaction.set_status(TransactionStatus.BLOCKED)
-            self.blocked_transactions[transaction_name] = blocking_transaction
 
+            transaction.set_status(TransactionStatus.BLOCKED)
+            self.blocked_transactions[transaction_name] = blocking_transaction_tuple
+
+
+    def read_request(self, params):
+
+        transaction_name = params[0]
+        variable = params[1]
+
+        transaction = self.lock_table.lock_map[variable].transaction
+
+        if transaction.get_status() != \
+                TransactionStatus.RUNNING:
+            return
+
+        if transaction.is_read_only():
+
+            if variable in self.variable_values:
+                log.debug(str(transaction.name) + " reads " + variable + " having value " + self.variable_values[variable])
+            
+            else:
+                
+                transaction.set_status(TransactionStatus.WAITING)
+                waiting_transaction = (transaction, InstructionType.READ, variable)
+                self.waiting_transactions[transaction_name] = waiting_transaction
+        
+        else:
+            
+            if self.site_manager.get_locks(transaction, LockType.READ, variable):
+
+                self.lock_table.set_lock(transaction, LockType.READ, variable)
+                transaction.set_status(TransactionStatus.RUNNING)
+                log.debug(str(transaction.name) + " reads " + variable)
+
+            else:
+
+                transaction.set_status(TransactionStatus.WAITING)
+                waiting_transaction = (transaction, InstructionType.READ, variable)
+                self.waiting_transactions[transaction_name] = waiting_transaction
+                
+        return
+
+        
     def detect_and_clear_deadlocks(self):
         for x in list(self.blocked_transactions):
             visited = dict()
@@ -119,6 +172,7 @@ class TransactionManager:
                 self.clear_deadlock(current, index - 1)
 
     def detect_deadlock(self, transaction, visited, current):
+
         if transaction in self.blocked_transactions:
             visited[transaction] = len(current) + 1
             current.append(transaction)
@@ -146,30 +200,53 @@ class TransactionManager:
         self.abort(max_name)
 
     def blocked_to_waiting(self):
+
+        to_pop = list()
+
         for key, block in self.blocked_transactions.items():
+
             if block[0] not in self.transaction_map:
-                self.waiting_transactions[block[0]] = (block[1],
+
+                self.waiting_transactions[key] = (block[1],
                                                        block[2],
                                                        block[3])
-                transaction = self.transaction_map[block[0]]
+                transaction = self.transaction_map[key]
                 transaction.set_status(TransactionStatus.WAITING)
-                self.blocked_transactions.pop(key)
+                to_pop.append(key)
+
+        for key in to_pop:
+            self.blocked_transactions.pop(key)
 
     def abort(self, name):
+
+        print("aborting " + name)
         self.blocked_transactions.pop(name)
         transaction = self.transaction_map.pop(name)
         self.clear_locks(transaction)
 
     def clear_locks(self, transaction):
+
         for var_name in list(self.lock_table.get_lock_map()):
+            
             lock = self.lock_table.get_lock_map()[var_name]
+           
             if lock.transaction == transaction:
+
+                print("clearing locks for " + transaction.name + " variable: " + var_name)
                 self.site_manager.clear_locks(lock, var_name)
                 self.lock_table.free(var_name)
 
     def try_waiting(self):
+
+        to_pop = list()
+
         for transaction in self.waiting_transactions:
+            
             params = self.waiting_transactions[transaction]
+            transaction_obj = self.transaction_map[transaction]
+            transaction_obj.set_status(TransactionStatus.RUNNING)
+            # print("TRy waiting  " + str(params[1])  + str(params[2]))
+
             if params[0] == InstructionType.WRITE:
                 self.write_request((transaction, params[1], params[2]))
             elif params[0] == InstructionType.READ:
@@ -179,38 +256,13 @@ class TransactionManager:
 
             if self.transaction_map[transaction].get_status() == \
                TransactionStatus.RUNNING:
-                self.waiting_transactions.pop(transaction)
+                to_pop.append(transaction)
 
+
+        for transaction in to_pop:    
+            self.waiting_transactions.pop(transaction)
+    
     def end(self, num, name):
-        return
-
-    def read_request(self, params):
-
-        transaction_name = params[0]
-        variable = params[1]
-
-        transaction = self.lock_table.lock_map[variable].transaction
-
-        if transaction.get_status() != \
-                TransactionStatus.RUNNING:
-            return
-
-        if transaction.is_read_only():
-
-            if variable in self.variable_values:
-                log.debug(str(transaction.name) + " reads " + variable +
-                          " having value " + self.variable_values[variable])
-
-            else:
-
-                transaction.set_status(TransactionStatus.WAITING)
-
-        if self.site_manager.get_locks(transaction, LockType.READ, variable):
-
-            self.lock_table.set_lock(transaction, LockType.READ, variable)
-
-            log.debug(str(transaction.name) + " reads " + variable)
-
         return
 
     def fail(self):

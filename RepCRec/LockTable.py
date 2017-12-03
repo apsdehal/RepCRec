@@ -47,8 +47,10 @@ class LockTable:
         if type(variable) == str:
             variable = int(variable[1:])
 
-        if self == lock:
-            self.free(variable)
+        self.lock_map.pop(variable)
+
+        # if self == lock:
+        #     self.free(variable)
 
     """
     Return 0 if not present

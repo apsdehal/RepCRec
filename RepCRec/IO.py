@@ -8,7 +8,7 @@ class IO:
 
     def __init__(self, file_name, site_manager, transaction_manager,
                  lock_table):
-        print("Hello")
+        # print("Hello")
 
         self.file_name = file_name
         self.line_generator = self._get_line_generator()
@@ -18,7 +18,7 @@ class IO:
 
     def get_next_instruction(self):
         line = next(self.line_generator, None)
-        print(line)
+        # print(line)
 
         if line is None:
             return line

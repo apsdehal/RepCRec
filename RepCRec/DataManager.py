@@ -33,7 +33,7 @@ class DataManager:
             return False
 
     def clear_lock(self, lock, variable):
-        self.lock_table.clear_lock(lock, variable)
+        self.lock_table.lock_map.pop(variable)
 
     def get_lock_table(self):
         return self.lock_table
@@ -53,6 +53,7 @@ class DataManager:
             self.lock_table.set_lock(transaction, lock_type, variable_index)
             return True
         else:
+            print(transaction.name + " did not get write lock on " + variable_index + " site: " + str(self.site_id))
             return False
 
     def write_variable(self, transaction, variable_name, value):
