@@ -1,6 +1,7 @@
 from tornado.ioloop import IOLoop
 
 from .Site import Site
+from .enums.SiteStatus import SiteStatus
 from .Variable import Variable
 from .LockType import LockType
 from .constants import FAIL_FUNC, DUMP_FUNC, RECOVER_FUNC
@@ -25,6 +26,7 @@ class SiteManager:
         return self.sites[index]
 
     def get_locks(self, transaction, typeof, variable):
+
         if type(variable) != int:
             variable = int(variable[1:])
         sites = Variable.get_sites(variable)
@@ -48,10 +50,46 @@ class SiteManager:
         return flag
 
     def get_site_range(self, sites):
+
+        return
+
+    def get_current_variables(self):
+
+        curr_variables = dict()
+
+        for site in self.sites:
+            
+            if site.get_status() == SiteStatus.UP:
+      
+                variables = site.get_all_variables()
+
+                for variable in variables:
+                    curr_variables[variable.name] = variable.value
+                    # if variable.name == params[0]:
+                    #     log.info(variable.value)
+
+                if len(curr_variables) == 20:
+                    return curr_variables
+
+        return curr_variables
+
+    
+    def get_variable_val(self, params):
+
+        sites = Variable.get_sites(int(params[0][1:]))
+
         if sites == 'all':
             sites = range(1, self.num_sites + 1)
         else:
             sites = [sites]
+
+        for site in sites:
+            
+            variables = self.sites[site].get_all_variables()
+
+            for variable in variables:
+                if variable.name == params[0]:
+                    return variable.value
 
     def tick(self, instruction):
         if instruction.get_instruction_type() == DUMP_FUNC:
