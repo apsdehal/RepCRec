@@ -116,8 +116,17 @@ class TransactionManager:
             return 0
 
     def clear_deadlock(self, transaction_list, index):
-        transaction_name = transaction_list[index]
-        self.abort(transaction_name)
+        transaction_list = transaction_list[index:]
+
+        max_id = -1
+        max_name = None
+
+        for name in transaction_list:
+            if max_id < self.transaction_map[name].id:
+                max_id = self.transaction_map[name].id
+                max_name = name
+
+        self.abort(max_name)
 
     def abort(self, name):
         self.blocked_list.pop(name)
