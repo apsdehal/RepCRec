@@ -1,12 +1,13 @@
 from .LockTable import LockTable
 from .Variable import Variable
+from .enums.LockType import LockType
 
 
 class DataManager:
 
     def __init__(self, id):
         self.site_id = id
-        # self.lock_table = LockTable()
+        self.lock_table = LockTable()
         self.variable_map = dict()
 
         for i in range(1, 21):
@@ -40,8 +41,15 @@ class DataManager:
     def recover(self):
         return
 
-    def get_lock(self, transaction, lock_type, variable_name):
-        return
+    def get_lock(self, transaction, lock_type, variable_index):
+        if lock_type == LockType.WRITE and not self.lock_table.is_locked(variable_index):
+            self.lock_table.set_lock(transaction, lock_type, variable_index)
+            return True
+        elif lock_type == LockType.READ and not self.lock_table.is_write_locked(variable_index):
+            self.lock_table.set_lock(transaction, lock_type, variable_index)
+            return True
+        else:
+            return False
 
     def write_variable(self, transaction, variable_name, value):
         return

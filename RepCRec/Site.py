@@ -20,7 +20,7 @@ class Site:
         self.variables = []
         self.status = SiteStatus.UP
         self.last_failure_time = None
-        self.DataManager = DataManager(self.id)
+        self.data_manager = DataManager(self.id)
 
     def set_status(self, status):
         if status in SiteStatus:
@@ -40,6 +40,9 @@ class Site:
 
     def set_last_failure_time(self, time):
         self.last_failure_time = time
+
+    def get_lock(self, transaction, typeof, variable):
+        return self.data_manager.get_lock(transaction, typeof, variable)
 
     def listen(self):
         # TODO: Actually kill the server instead of sending 500
@@ -70,7 +73,7 @@ class Site:
     def dump_site(self):
         # TODO: Complete this once we have variables
 
-        for index, variable in self.DataManager.variable_map.items():
+        for index, variable in self.data_manager.variable_map.items():
 
             if isinstance(variable.value, int):
                 print(variable.name + ":  " +

@@ -26,6 +26,7 @@ class TransactionManager:
         self.lock_table = lock_table
         self.transaction_queue = list()
         self.site_manager = site_manager
+        self.waiting_transactions = dict()
 
     def commit_transaction(self, name):
 
@@ -96,14 +97,11 @@ class TransactionManager:
                 TransactionStatus.RUNNING:
             return
 
-        if not self.lock_table.is_locked(variable):
-            lock = Lock(LockType.WRITE, self.transaction_map[transaction_name])
-            self.lock_table.lock_map[variable] = lock
+        if self.site_manager.get_lock(variable):
             self.transaction_map[transaction_name].uncommitted_variables[variable] = value
-
-    def write_request_even(self, params):
-
-        return
+        else:
+            self.transaction_map[transaction_name].set_status(TransactionStatus.WAITING)
+            self.waiting_transactions[transaction_name] = variable
 
     def end(self, num, name):
         return

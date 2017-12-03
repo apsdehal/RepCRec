@@ -7,8 +7,10 @@ class LockTable:
         # Variable Index to lock map
         self.lock_map = dict()
         self.lock_queue = dict()
-        # for i in range(1, num_variables + 1):
-        #     self.lock_map[i] = None
+
+    def set_lock(self, transaction, lock_type, variable_index):
+        lock = Lock(lock_type, transaction)
+        self.lock_map[variable_index] = lock
 
     def is_locked(self, variable_index):
         if variable_index not in self.lock_map:
