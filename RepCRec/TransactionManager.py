@@ -8,20 +8,12 @@ from .LockTable import LockTable
 from .enums.LockType import LockType
 from .enums.TransactionStatus import TransactionStatus
 from .enums.InstructionType import InstructionType
-from .constants import BEGIN_FUNC, BEGIN_READ_ONLY_FUNC, WRITE_FUNC, READ_FUNC
+from .constants import BEGIN_FUNC, BEGIN_READ_ONLY_FUNC, WRITE_FUNC, READ_FUNC, END_FUNC
 
 log = logging.getLogger(__name__)
 
-class TransactionManager:
 
-    BEGIN_FUNC = "begin"
-    BEGIN_READ_ONLY_FUNC = "beginRO"
-    READ_FUNC = "R"
-    WRITE_FUNC = "W"
-    DUMP_FUNC = "dump"
-    END_FUNC = "end"
-    FAIL_FUNC = "fail"
-    RECOVER_FUNC = "recover"
+class TransactionManager:
 
     def __init__(self, num_vars, num_sites, lock_table, site_manager):
         self.number_of_variables = num_vars
@@ -32,9 +24,8 @@ class TransactionManager:
         self.transaction_queue = list()
         self.site_manager = site_manager
         self.blocked_transactions = dict()
-        self.waiting_transactions[block[0]] = (block[0],
-                                               block[1],
-                                               block[2]) = dict()
+        self.waiting_transactions = dict()
+
     def commit_transaction(self, name):
         transaction = self.transaction_map[name]
         uncommited_variables = transaction.get_uncommitted_variables()
@@ -52,6 +43,7 @@ class TransactionManager:
     def tick(self, instruction):
         self.detect_and_clear_deadlocks()
         self.blocked_to_waiting()
+        self.try_waiting()
 
         if instruction.get_instruction_type() == BEGIN_FUNC:
             self.begin(params)
@@ -84,7 +76,6 @@ class TransactionManager:
         self.variable_values = self.site_manager.get_current_variables()
 
     def write_request(self, params):
-
         transaction_name = params[0]
         variable = params[1]
         value = int(params[2])
@@ -99,7 +90,7 @@ class TransactionManager:
             self.lock_table.set_lock(transaction,
                                      LockType.WRITE, variable)
             transaction.uncommitted_variables[variable] = value
-        
+            self.transaction_map[transaction_name].set_status(TransactionStatus.RUNNING)
         else:
 
             transaction.set_status(TransactionStatus.WAITING)
@@ -109,7 +100,7 @@ class TransactionManager:
                                     InstructionType.WRITE,
                                     variable,
                                     value)
-
+            self.transaction_map[transaction_name].set_status(TransactionStatus.BLOCKED)
             self.blocked_transactions[transaction_name] = blocking_transaction
 
     def detect_and_clear_deadlocks(self):
@@ -149,9 +140,10 @@ class TransactionManager:
     def blocked_to_waiting(self):
         for key, block in self.blocked_transactions.items():
             if block[0] not in self.transaction_map:
-                self.waiting_transactions[block[0]] = (block[0],
-                                                       block[1],
-                                                       block[2])
+                self.waiting_transactions[block[0]] = (block[1],
+                                                       block[2],
+                                                       block[3])
+                self.transaction_map[block[0]].set_status(TransactionStatus.WAITING)
                 self.blocked_transactions.pop(key)
 
     def abort(self, name):
@@ -164,6 +156,19 @@ class TransactionManager:
             if lock.transaction == transaction:
                 self.site_manager.clear_locks(lock, var_name)
                 self.lock_table.free(int(var_name[1:]))
+
+    def try_waiting(self):
+        for transaction in self.waiting_list:
+            params = self.waiting_list[transaction]
+            if params[0] == InstructionType.WRITE:
+                self.write_request((transaction, params[1], params[2]))
+            elif params[0] == InstructionType.READ:
+                self.read_request((transaction, params[1], params[2]))
+            elif params[0] == InstructionType.READ_ONLY:
+                self.read_only_request((transaction, params[1], params[2]))
+
+            if self.transaction_map[transaction].get_status() == TransactionStatus.RUNNING:
+                self.waiting_list.pop(transaction)
 
     def end(self, num, name):
         return
@@ -183,11 +188,11 @@ class TransactionManager:
 
             if variable in self.variable_values:
                 log.debug(str(transaction.name) + " reads " + variable + " having value " + self.variable_values[variable])
-            
+
             else:
-                
+
                 transaction.set_status(TransactionStatus.WAITING)
-        
+
         if self.site_manager.get_locks(transaction, LockType.READ, variable):
 
             self.lock_table.set_lock(transaction, LockType.READ, variable)
