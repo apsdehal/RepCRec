@@ -85,10 +85,12 @@ class Site:
         return
 
     def get_all_variables(self):
+
         variables = list()
 
         for idx in list(self.data_manager.variable_map):
-            variables = self.data_manager.variable_map[idx]
+
+            variable = self.data_manager.variable_map[idx]
             variables.append(variable)
 
         return variables

@@ -55,14 +55,18 @@ class SiteManager:
             sites = [sites]
         return sites
 
-    def get_current_variables(self):
+    def get_current_variables(self, var=None):
 
         variable_values = dict()
 
-        for site in self.sites:
+        for site in self.sites[1:]:
             variables = site.get_all_variables()
 
             for variable in variables:
+
+                if var != None and variable.name == var:
+                    return variable.value
+
                 variable_values[variable.name] = variable.value
 
             if len(variable_values) == self.num_variables:
