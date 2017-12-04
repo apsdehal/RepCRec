@@ -1,6 +1,10 @@
+import logging
+
 from .LockTable import LockTable
 from .Variable import Variable
 from .enums.LockType import LockType
+
+log = logging.getLogger(__name__)
 
 
 class DataManager:
@@ -53,7 +57,8 @@ class DataManager:
             self.lock_table.set_lock(transaction, lock_type, variable_index)
             return True
         else:
-            print(transaction.name + " did not get write lock on " + variable_index + " site: " + str(self.site_id))
+            log.debug(transaction.name + " did not get write lock on " +
+                      variable_index + " site: " + str(self.site_id))
             return False
 
     def write_variable(self, transaction, variable_name, value):

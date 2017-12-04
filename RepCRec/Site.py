@@ -79,8 +79,8 @@ class Site:
         for index in list(self.data_manager.variable_map):
             variable = self.data_manager.variable_map[index]
             if isinstance(variable.value, int):
-                print(variable.name + ":  " +
-                      str(variable.value) + " at site " + str(self.id))
+                log.info(variable.name + ":  " +
+                          str(variable.value) + " at site " + str(self.id))
 
         return
 

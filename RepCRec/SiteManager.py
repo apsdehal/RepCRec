@@ -6,6 +6,7 @@ from .Site import Site
 from .Variable import Variable
 from .enums.LockType import LockType
 from .enums.SiteStatus import SiteStatus
+from .enums.LockAcquireStatus import LockAcquireStatus
 from .constants import FAIL_FUNC, DUMP_FUNC, RECOVER_FUNC
 
 log = logging.getLogger(__name__)
@@ -70,7 +71,7 @@ class SiteManager:
 
             for variable in variables:
 
-                if var != None and variable.name == var:
+                if var is not None and variable.name == var:
                     return variable.value
 
                 variable_values[variable.name] = variable.value

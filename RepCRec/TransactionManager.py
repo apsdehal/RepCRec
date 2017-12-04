@@ -8,6 +8,7 @@ from .LockTable import LockTable
 from .enums.LockType import LockType
 from .enums.TransactionStatus import TransactionStatus
 from .enums.InstructionType import InstructionType
+from .enums.LockAcquireStatus import LockAcquireStatus
 from .constants import BEGIN_FUNC, BEGIN_READ_ONLY_FUNC, WRITE_FUNC, \
     READ_FUNC, END_FUNC
 
@@ -148,8 +149,9 @@ class TransactionManager:
 
                 self.lock_table.set_lock(transaction, LockType.READ, variable)
                 transaction.set_status(TransactionStatus.RUNNING)
-                log.debug(str(transaction.name) + " reads " + variable + " having value " +
-                          str(self.site_manager.get_current_variables(variable)))
+                value_read = self.site_manager.get_current_variables(variable)
+                log.debug(str(transaction.name) + " reads " + variable +
+                          " having value " + str(value_read))
 
             else:
 
@@ -218,7 +220,7 @@ class TransactionManager:
 
     def abort(self, name):
 
-        log.info("aborting " + name)
+        log.info("Aborting " + name)
         self.blocked_transactions.pop(name)
         transaction = self.transaction_map.pop(name)
         self.clear_locks(transaction)
