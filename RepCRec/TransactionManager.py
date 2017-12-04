@@ -29,9 +29,19 @@ class TransactionManager:
         self.waiting_transactions = dict()
         self.variable_values = dict()
 
-    def tick(self, instruction):
+    def clear_aborted(self):
 
-        # self.blocked_transactions = dict()
+        to_pop = list()
+
+        for trn_name, transaction in transaction_map.items():
+
+            if transaction.get_status() == TransactionStatus.ABORTED:
+
+                for waiting_trn in waiting_transactions.values():
+
+                    if trans
+    def tick(self, instruction):
+        self.clear_aborted()
         self.detect_and_clear_deadlocks()
         self.blocked_to_waiting()
         self.try_waiting()
