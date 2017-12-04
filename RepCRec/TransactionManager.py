@@ -82,7 +82,10 @@ class TransactionManager:
 
         transaction = self.transaction_map[transaction_name]
 
-        if transaction.get_status() != TransactionStatus.RUNNING:
+        is_waiting = transaction.get_status() == TransactionStatus.WAITING
+        is_running = transaction.get_status() == TransactionStatus.RUNNING
+
+        if not (is_waiting or is_running):
             return
 
         if self.lock_table.is_locked_by_transaction(transaction, variable, LockType.WRITE):
@@ -140,7 +143,10 @@ class TransactionManager:
 
         transaction = self.transaction_map[transaction_name]
 
-        if transaction.get_status() != TransactionStatus.RUNNING:
+        is_waiting = transaction.get_status() == TransactionStatus.WAITING
+        is_running = transaction.get_status() == TransactionStatus.RUNNING
+
+        if not (is_waiting or is_running):
             return
 
         if transaction.is_read_only:
@@ -173,7 +179,6 @@ class TransactionManager:
                                                               variable)
 
             if lock_acquire_status == LockAcquireStatus.GOT_LOCK:
-
                 log.info(transaction.name + " got read lock on " + variable +
                          " having value " + str(self.site_manager.get_current_variables(variable)))
                 transaction.read_variables[
@@ -257,7 +262,7 @@ class TransactionManager:
                 max_id = self.transaction_map[name].id
                 max_name = name
 
-        log.info(max_name + " aborted as it is younges in a deadlock")
+        log.info(max_name + " aborted as it is youngest in a deadlock")
         self.abort(max_name)
 
     def blocked_to_waiting(self):
@@ -265,20 +270,15 @@ class TransactionManager:
         to_pop = list()
 
         for key, block in self.blocked_transactions.items():
-
-            is_aborted = self.transaction_map[
-                block[0]].get_status() == TransactionStatus.ABORTED
-            is_committed = self.transaction_map[
-                block[0]].get_status() == TransactionStatus.COMMITTED
+            blocking_transaction = self.transaction_map[block[0]]
+            is_aborted = blocking_transaction.get_status() == TransactionStatus.ABORTED
+            is_committed = blocking_transaction.get_status() == TransactionStatus.COMMITTED
             if is_aborted or is_committed:
 
-                self.waiting_transactions[key] = (block[1],
-                                                  block[2],
-                                                  block[3])
+                self.waiting_transactions[key] = block[1:]
                 transaction = self.transaction_map[key]
                 transaction.set_status(TransactionStatus.WAITING)
                 to_pop.append(key)
-
         for key in to_pop:
             self.blocked_transactions.pop(key)
 
@@ -294,9 +294,7 @@ class TransactionManager:
         self.clear_locks(transaction)
 
     def clear_locks(self, transaction):
-
         for var_name in list(self.lock_table.get_lock_map()):
-
             lock = self.lock_table.get_lock_map()[var_name]
 
             if lock.transaction == transaction:
@@ -309,13 +307,9 @@ class TransactionManager:
     def try_waiting(self):
 
         to_pop = list()
-
         for transaction in self.waiting_transactions:
-
             params = self.waiting_transactions[transaction]
             transaction_obj = self.transaction_map[transaction]
-            transaction_obj.set_status(TransactionStatus.RUNNING)
-            # log.info("TRy waiting  " + str(params[1])  + str(params[2]))
 
             if params[0] == InstructionType.WRITE:
                 self.write_request((transaction, params[1], params[2]))
@@ -356,7 +350,7 @@ class TransactionManager:
     def end(self, params):
         if self.transaction_map[params[0]].get_status() == TransactionStatus.RUNNING:
             self.commit_transaction(params[0])
-            self.clear_locks(params[0])
+            self.clear_locks(self.transaction_map[params[0]])
             log.info(params[0] + " committed")
 
     def fail(self):
