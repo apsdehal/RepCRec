@@ -35,11 +35,13 @@ class SiteManager:
 
         flag = 0
         all_sites_down = 1
+        even_index = int(variable[1:]) % 2 == 0
+
         for site in sites:
             status = self.sites[site].get_status()
             if status == SiteStatus.DOWN:
                 continue
-            if status == SiteStatus.RECOVERING and typeof == LockType.READ:
+            if status == SiteStatus.RECOVERING and typeof == LockType.READ and even_index:
                 continue
 
             all_sites_down = 0

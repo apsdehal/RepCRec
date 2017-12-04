@@ -138,9 +138,6 @@ class TransactionManager:
         if transaction.is_read_only:
 
             if variable in transaction.variable_values:
-                log.debug(str(transaction.name) + " reads " +
-                          variable + " having value " +
-                          str(transaction.variable_values[variable]))
                 transaction.read_variables[variable] = transaction.variable_values[variable]
 
             else:
@@ -302,9 +299,7 @@ class TransactionManager:
             if params[0] == InstructionType.WRITE:
                 self.write_request((transaction, params[1], params[2]))
             elif params[0] == InstructionType.READ:
-                self.read_request((transaction, params[1], params[2]))
-            elif params[0] == InstructionType.READ_ONLY:
-                self.read_only_request((transaction, params[1], params[2]))
+                self.read_request((transaction, params[1]))
 
             if self.transaction_map[transaction].get_status() == \
                TransactionStatus.RUNNING:
