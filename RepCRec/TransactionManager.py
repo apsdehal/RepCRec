@@ -53,7 +53,8 @@ class TransactionManager:
             self.write_request(params)
 
         elif instruction.get_instruction_type() == END_FUNC:
-            self.end(params) else:
+            self.end(params)
+        else:
             log.info("We have a problem")
 
     def begin(self, params):
@@ -87,7 +88,6 @@ class TransactionManager:
 
         if not (is_waiting or is_running):
             return
-
         if self.lock_table.is_locked_by_transaction(transaction, variable, LockType.WRITE):
 
             log.info(transaction.name +
@@ -99,7 +99,6 @@ class TransactionManager:
         lock_acquire_status = self.site_manager.get_locks(transaction,
                                                           LockType.WRITE,
                                                           variable)
-
         if lock_acquire_status == LockAcquireStatus.GOT_LOCK:
 
             log.info(transaction.name + " got write lock on " + variable)
@@ -123,6 +122,15 @@ class TransactionManager:
             lock = self.lock_table.lock_map[variable]
 
             blocking_transaction = lock.transaction.name
+
+            if lock.transaction == transaction:
+                log.info(transaction.name + " is waiting on " + variable)
+                waiting_txn_tuple = (InstructionType.WRITE,
+                                     variable,
+                                     value)
+                transaction.set_status(TransactionStatus.WAITING)
+                self.waiting_transactions[transaction.name] = waiting_txn_tuple
+                return
 
             blocking_txn_tuple = (blocking_transaction,
                                   InstructionType.WRITE,
@@ -170,7 +178,6 @@ class TransactionManager:
 
                 log.info(transaction.name +
                          " already has a read lock on " + variable)
-                transaction.uncommitted_variables[variable] = value
                 transaction.set_status(TransactionStatus.RUNNING)
                 return
 
@@ -202,6 +209,14 @@ class TransactionManager:
                 lock = self.lock_table.lock_map[variable]
 
                 blocking_transaction = lock.transaction.name
+
+                if lock.transaction == transaction:
+                    log.info(transaction.name + " is waiting on " + variable)
+                    waiting_txn_tuple = (InstructionType.READ,
+                                         value)
+                    transaction.set_status(TransactionStatus.WAITING)
+                    self.waiting_transactions[transaction.name] = waiting_txn_tuple
+                    return
 
                 blocking_txn_tuple = (blocking_transaction,
                                       InstructionType.READ,

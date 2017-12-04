@@ -33,7 +33,7 @@ class SiteManager:
         sites = Variable.get_sites(variable)
         sites = self.get_site_range(sites)
 
-        flag = 0
+        flag = 1
         all_sites_down = 1
         even_index = int(variable[1:]) % 2 == 0
 
@@ -48,7 +48,7 @@ class SiteManager:
             state = self.sites[site].get_lock(transaction, typeof, variable)
             if state == 1 and typeof == LockType.READ:
                 return LockAcquireStatus.GOT_LOCK
-            flag |= state
+            flag &= state
 
         if all_sites_down == 1:
             return LockAcquireStatus.ALL_SITES_DOWN
@@ -70,7 +70,7 @@ class SiteManager:
 
         for site in self.sites[1:]:
 
-            if site.status == SiteStatus.RUNNING:
+            if site.status == SiteStatus.UP:
                 variables = site.get_all_variables()
 
                 for variable in variables:
