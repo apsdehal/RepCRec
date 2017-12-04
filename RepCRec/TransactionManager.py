@@ -124,13 +124,7 @@ class TransactionManager:
                 blocking_transaction = lock.transaction.name
 
                 if lock.transaction == transaction:
-                    log.info(transaction.name + " is waiting on " + variable)
-                    waiting_txn_tuple = (InstructionType.WRITE,
-                                         variable,
-                                         value)
-                    transaction.set_status(TransactionStatus.WAITING)
-                    self.waiting_transactions[transaction.name] = waiting_txn_tuple
-                    return
+                    continue
 
                 blocking_txn_tuple = (blocking_transaction,
                                       InstructionType.WRITE,
@@ -145,7 +139,6 @@ class TransactionManager:
 
                 self.blocked_transactions[
                     transaction_name].append(blocking_txn_tuple)
-
 
     def read_request(self, params):
 
@@ -215,12 +208,7 @@ class TransactionManager:
                     blocking_transaction = lock.transaction.name
 
                     if lock.transaction == transaction:
-                        log.info(transaction.name + " is waiting on " + variable)
-                        waiting_txn_tuple = (InstructionType.READ,
-                                             value)
-                        transaction.set_status(TransactionStatus.WAITING)
-                        self.waiting_transactions[transaction.name] = waiting_txn_tuple
-                        return
+                        continue
 
                     blocking_txn_tuple = (blocking_transaction,
                                           InstructionType.READ,
@@ -350,7 +338,8 @@ class TransactionManager:
             self.waiting_transactions.pop(transaction)
 
     def commit_transaction(self, name):
-        if self.transaction_map[name].get_status() != TransactionStatus.RUNNING:
+        status = self.transaction_map[name].get_status()
+        if status == TransactionStatus.COMMITTED or status == TransactionStatus.ABORTED:
             return
 
         transaction = self.transaction_map[name]
@@ -374,10 +363,13 @@ class TransactionManager:
         self.transaction_map[name].set_status(TransactionStatus.COMMITTED)
 
     def end(self, params):
-        if self.transaction_map[params[0]].get_status() == TransactionStatus.RUNNING:
-            self.commit_transaction(params[0])
-            self.clear_locks(self.transaction_map[params[0]])
-            log.info(params[0] + " committed")
+        status = self.transaction_map[params[0]].get_status()
+        if status == TransactionStatus.COMMITTED or status == TransactionStatus.ABORTED:
+            return
+
+        self.commit_transaction(params[0])
+        log.info(params[0] + " committed")
+        self.clear_locks(self.transaction_map[params[0]])
 
     def fail(self):
         return
