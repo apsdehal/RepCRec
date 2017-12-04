@@ -60,7 +60,7 @@ class TransactionManager:
     def begin(self, params):
         current_index = len(self.transaction_map)
 
-        log.info(params[0])
+        log.info("Starting " + params[0])
         self.transaction_map[str(params[0])] = Transaction(
             current_index, params[0])
 
@@ -273,7 +273,7 @@ class TransactionManager:
 
     def abort(self, name, status_aborted=False):
 
-        log.info("aborting " + name)
+        log.info("Aborting " + name)
 
         if name in self.blocked_transactions:
             self.blocked_transactions.pop(name)

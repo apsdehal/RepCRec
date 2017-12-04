@@ -83,15 +83,18 @@ class Site:
         self.set_status(SiteStatus.UP)
 
     def dump_site(self):
-        # TODO: Complete this once we have variables
+        log.info("=== Site " + str(self.id) + " ===")
 
+        count = 1
         for index in list(self.data_manager.variable_map):
             variable = self.data_manager.variable_map[index]
-            if isinstance(variable.value, int):
+            if variable.value != int(index[1:]) * 10:
+                count += 1
                 log.info(variable.name + ":  " +
                          str(variable.value) + " at site " + str(self.id))
 
-        return
+        if count != len(self.data_manager.variable_map):
+            log.info("All other variables have same initial value")
 
     def get_all_variables(self):
 
