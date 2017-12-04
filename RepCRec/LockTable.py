@@ -53,19 +53,18 @@ class LockTable:
         #     self.free(variable)
 
     """
-    Return 0 if not present
+    Return 0 if not present or if present and lock type doesn't match
     Return 1 if present and lock_type matches
-    Return 2 if present but lock_type doesn't match
     """
-    def is_locked_by_transaction(transaction, variable_index, lock_type):
+    def is_locked_by_transaction(self, current_transaction, variable_index, lock_type):
         if variable_index in self.lock_map:
             lock = self.lock_map[variable_index]
             transaction = lock.get_transaction()
-            if transaction.get_id() == transaction.get_id():
+            if current_transaction.get_id() == transaction.get_id():
                 if lock_type == lock.get_lock_type():
                     return 1
                 else:
-                    return 2
+                    return 0
             else:
                 return 0
         else:

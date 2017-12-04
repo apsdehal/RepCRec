@@ -85,8 +85,6 @@ class SiteManager:
         params = list(instruction.get_params())
 
         if instruction.get_instruction_type() == DUMP_FUNC:
-            log.debug("Got here")
-
             if len(params[0]) == 0:
                 for site in self.sites[1:]:
                     site.dump_site()
@@ -128,8 +126,10 @@ class SiteManager:
 
     def fail(self, index):
         self._check_index_sanity(index)
+        log.info("Site " + str(index) + " failed")
         self.sites[index].fail()
 
     def recover(self, index):
         self._check_index_sanity(index)
+        log.info("Site " + str(index) + " recovered")
         self.sites[index].recover()

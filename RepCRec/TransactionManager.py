@@ -140,7 +140,8 @@ class TransactionManager:
             if variable in transaction.variable_values:
                 log.debug(str(transaction.name) + " reads " +
                           variable + " having value " +
-                          transaction.variable_values[variable])
+                          str(transaction.variable_values[variable]))
+                transaction.read_variables[variable] = transaction.variable_values[variable]
 
             else:
 
@@ -160,6 +161,7 @@ class TransactionManager:
 
                 log.info(transaction.name + " got read lock on " + variable +
                          " having value " + str(self.site_manager.get_current_variables(variable)))
+                transaction.read_variables[variable] = self.site_manager.get_current_variables(variable)
 
                 self.lock_table.set_lock(transaction,
                                          LockType.READ, variable)
@@ -191,8 +193,6 @@ class TransactionManager:
                 self.blocked_transactions[
                     transaction_name] = blocking_txn_tuple
 
-        return
-
     def clear_aborted(self):
 
         to_pop = list()
@@ -202,19 +202,7 @@ class TransactionManager:
             if transaction.get_status() == TransactionStatus.ABORTED:
 
                 to_pop.append(trn_name)
-                self.abort(trn_name, True)
-                # for waiting_trn in self.waiting_transactions.keys():
-                #     if trn_name == waiting_trn:
-                #         self.abort(trn_name)
-
-                # for blocked_trn in self.blocked_transactions.keys():
-                #     if trn_name == blocked_trn:
-                #         self.abort(trn_name)
-
-        for trn in to_pop:
-            self.transaction_map.pop(trn)
-
-        return
+                self.abort(trn_name)
 
     def detect_and_clear_deadlocks(self):
         for x in list(self.blocked_transactions):
@@ -253,6 +241,7 @@ class TransactionManager:
                 max_id = self.transaction_map[name].id
                 max_name = name
 
+        log.info(max_name + " aborted as it is younges in a deadlock")
         self.abort(max_name)
 
     def blocked_to_waiting(self):
@@ -275,20 +264,12 @@ class TransactionManager:
         for key in to_pop:
             self.blocked_transactions.pop(key)
 
-    def abort(self, name, status_aborted=False):
-
-        log.info("Aborting " + name)
-
+    def abort(self, name):
         if name in self.blocked_transactions:
             self.blocked_transactions.pop(name)
 
         if name in self.waiting_transactions:
             self.waiting_transactions.pop(name)
-
-        # if not status_aborted:
-        #     transaction = self.transaction_map.pop(name)
-        # else:
-        #     transaction = self.transaction_map[name]
 
         transaction = self.transaction_map[name]
         transaction.set_status(TransactionStatus.ABORTED)
@@ -337,6 +318,12 @@ class TransactionManager:
             return
 
         transaction = self.transaction_map[name]
+        read_variables = transaction.get_read_variables()
+
+        for variable, value in read_variables.items():
+            log.info(name + " read the value " + str(value) +
+                     " of variable " + variable)
+
         uncommited_variables = transaction.get_uncommitted_variables()
 
         for variable, value in uncommited_variables.items():
@@ -345,15 +332,16 @@ class TransactionManager:
                 var = int(variable[1:])
                 if var % 2 == 0 or ((var % 10) + 1) == i:
                     site = self.site_manager.get_site(i)
-                    site.data_manager.write_variable(transaction,
-                                                     variable,
-                                                     value)
+                    site.write_variable(transaction,
+                                        variable,
+                                        value)
         self.transaction_map[name].set_status(TransactionStatus.COMMITTED)
 
     def end(self, params):
         if self.transaction_map[params[0]].get_status() == TransactionStatus.RUNNING:
             self.commit_transaction(params[0])
             self.clear_locks(params[0])
+            log.info(params[0] + " committed")
 
     def fail(self):
         return

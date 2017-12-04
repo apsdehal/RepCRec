@@ -62,7 +62,13 @@ class DataManager:
             return False
 
     def write_variable(self, transaction, variable_name, value):
+        # if self.lock_table.is_locked_by_transaction(transaction,
+        #                                             variable_name,
+        #                                             LockType.WRITE):
         self.variable_map[variable_name].set_value(value)
+            # return True
+        # else:
+        #     return False
 
     def read_variable(self, transaction, variable_name):
         return None

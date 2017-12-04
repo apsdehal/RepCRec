@@ -49,6 +49,13 @@ class Site:
     def clear_lock(self, lock, variable):
         self.data_manager.clear_lock(lock, variable)
 
+    def write_variable(self, transaction, variable, value):
+        if self.status != SiteStatus.DOWN:
+            self.data_manager.write_variable(transaction,
+                                             variable,
+                                             value)
+            self.status = SiteStatus.UP
+
     def listen(self):
         # TODO: Actually kill the server instead of sending 500
         # See https://gist.github.com/mywaiting/4643396 mainly server.stop
@@ -75,12 +82,13 @@ class Site:
         lock_map = lock_table.get_lock_map()
 
         for variable, lock in lock_map.items():
+            log.info(lock.transaction.name + " aborted as site " +
+                     str(self.id) + " failed")
             lock.transaction.set_status(TransactionStatus.ABORTED)
 
     def recover(self):
         # This would make sense once we actually kill the server
         self.set_status(SiteStatus.RECOVERING)
-        self.set_status(SiteStatus.UP)
 
     def dump_site(self):
         log.info("=== Site " + str(self.id) + " ===")
@@ -88,6 +96,12 @@ class Site:
         count = 1
         for index in list(self.data_manager.variable_map):
             variable = self.data_manager.variable_map[index]
+
+            if variable.index % 2 == 0 and self.status == SiteStatus.RECOVERING:
+                log.info(variable.name + ":" +
+                         " is not available for reading")
+                continue
+
             if variable.value != int(index[1:]) * 10:
                 count += 1
                 log.info(variable.name + ":  " +

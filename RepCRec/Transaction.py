@@ -9,8 +9,12 @@ class Transaction:
         self.sites_accesssed = []
         self.name = name
         self.uncommitted_variables = dict()
+        self.read_variables = dict()
         self.is_read_only = read_only
         self.variable_values = dict()
+
+    def get_id(self):
+        return self.id
 
     def get_status(self):
         return self.status
@@ -28,6 +32,9 @@ class Transaction:
         else:
             # TODO: Do something here
             return
+
+    def get_read_variables(self):
+        return self.read_variables
 
     def get_uncommitted_variables(self):
         return self.uncommitted_variables
