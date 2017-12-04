@@ -19,7 +19,6 @@ class SiteManager:
         self.num_sites = num_sites
         self.sites = [None] + [Site(i) for i in range(1, num_sites + 1)]
         self.num_variables = num_variables
-        self.transaction_manager = transaction_manager
 
     def _check_index_sanity(self, index):
         if index > self.num_sites or index <= 0:

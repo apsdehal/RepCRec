@@ -3,9 +3,11 @@ import logging
 from tornado import web, gen, process, httpserver, netutil
 from .config import config
 from .SiteHandler import SiteHandler
-from .enums.SiteStatus import SiteStatus
 from .DataManager import DataManager
 from .Transaction import Transaction
+
+from .enums.SiteStatus import SiteStatus
+from .enums.TransactionStatus import TransactionStatus
 
 log = logging.getLogger(__name__)
 
@@ -66,9 +68,11 @@ class Site:
         self.set_status(SiteStatus.UP)
 
     def fail(self):
-        self.set_status(SiteStatus.DOWN)
 
-        lock_map = self.lock_table.get_lock_map()
+        self.set_status(SiteStatus.DOWN)
+        lock_table = self.data_manager.get_lock_table()
+
+        lock_map = lock_table.get_lock_map()
 
         for variable, lock in lock_map.items():
             lock.transaction.set_status(TransactionStatus.ABORTED)
@@ -85,7 +89,7 @@ class Site:
             variable = self.data_manager.variable_map[index]
             if isinstance(variable.value, int):
                 log.info(variable.name + ":  " +
-                          str(variable.value) + " at site " + str(self.id))
+                         str(variable.value) + " at site " + str(self.id))
 
         return
 

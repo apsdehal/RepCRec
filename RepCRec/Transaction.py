@@ -10,6 +10,7 @@ class Transaction:
         self.name = name
         self.uncommitted_variables = dict()
         self.is_read_only = read_only
+        self.variable_values = dict()
 
     def get_status(self):
         return self.status
