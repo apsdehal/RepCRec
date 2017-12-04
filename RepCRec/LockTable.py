@@ -7,14 +7,16 @@ class LockTable:
     def __init__(self):
         # Variable Index to lock map
         self.lock_map = dict()
-        self.lock_queue = dict()
 
     def get_lock_map(self):
         return self.lock_map
 
     def set_lock(self, transaction, lock_type, variable):
         lock = Lock(lock_type, transaction)
-        self.lock_map[variable] = lock
+
+        if variable not in self.lock_map:
+            self.lock_map[variable] = []
+        self.lock_map[variable].append(lock)
 
     def is_locked(self, variable):
         if variable not in self.lock_map:
@@ -26,8 +28,9 @@ class LockTable:
         if variable not in self.lock_map:
             return False
         else:
-            if self.lock_map[variable].get_lock_type() == LockType.WRITE:
-                return True
+            for lock in self.lock_map[variable]:
+                if lock.get_lock_type() == LockType.WRITE:
+                    return True
             else:
                 return False
 
@@ -35,8 +38,9 @@ class LockTable:
         if variable not in self.lock_map:
             return False
         else:
-            if self.lock_map[variable].get_lock_type() == LockType.READ:
-                return True
+            for lock in self.lock_map[variable]:
+                if lock.get_lock_type() == LockType.WRITE:
+                    return True
             else:
                 return False
 
@@ -45,8 +49,11 @@ class LockTable:
 
     def clear_lock(self, lock, variable):
         if variable in self.lock_map:
-            if self.lock_map[variable] == lock:
-                self.free(variable)
+            try:
+                index = self.lock_map[variable].index(lock)
+                self.lock_map[variable] = self.lock_map[variable][:index] + self.lock_map[variable][index + 1:]
+            except ValueError:
+                pass
 
     """
     Return 0 if not present or if present and lock type doesn't match
@@ -54,14 +61,11 @@ class LockTable:
     """
     def is_locked_by_transaction(self, current_transaction, variable, lock_type):
         if variable in self.lock_map:
-            lock = self.lock_map[variable]
-            transaction = lock.get_transaction()
-            if current_transaction.get_id() == transaction.get_id():
-                if lock_type == lock.get_lock_type():
-                    return 1
-                else:
-                    return 0
-            else:
-                return 0
+            for lock in self.lock_map[variable]:
+                transaction = lock.get_transaction()
+                if current_transaction.get_id() == transaction.get_id():
+                    if lock_type == lock.get_lock_type():
+                        return 1
+            return 0
         else:
             return 0
