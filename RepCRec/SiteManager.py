@@ -69,14 +69,32 @@ class SiteManager:
         variable_values = dict()
 
         for site in self.sites[1:]:
-            variables = site.get_all_variables()
 
-            for variable in variables:
+            if site.status == SiteStatus.RUNNING:
+                variables = site.get_all_variables()
 
-                if var is not None and variable.name == var:
-                    return variable.value
+                for variable in variables:
 
-                variable_values[variable.name] = variable.value
+                    if var is not None and variable.name == var:
+                        return variable.value
+
+                    variable_values[variable.name] = variable.value
+
+                if len(variable_values) == self.num_variables:
+                    return variable_values
+
+            elif site.status == SiteStatus.RECOVERING:
+
+                variables = site.get_all_variables()
+
+                for variable in variables:
+
+                    if variable.index % 2 == 1:
+
+                        if var is not None and variable.name == var:
+                            return variable.value
+
+                        variable_values[variable.name] = variable.value
 
             if len(variable_values) == self.num_variables:
                 return variable_values

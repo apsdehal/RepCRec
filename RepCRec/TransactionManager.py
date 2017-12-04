@@ -53,8 +53,7 @@ class TransactionManager:
             self.write_request(params)
 
         elif instruction.get_instruction_type() == END_FUNC:
-            self.end(params)
-        else:
+            self.end(params) else:
             log.info("We have a problem")
 
     def begin(self, params):
@@ -86,6 +85,14 @@ class TransactionManager:
         if transaction.get_status() != TransactionStatus.RUNNING:
             return
 
+        if self.lock_table.is_locked_by_transaction(transaction, variable, LockType.WRITE):
+
+            log.info(transaction.name +
+                     " already has a write lock on " + variable)
+            transaction.uncommitted_variables[variable] = value
+            transaction.set_status(TransactionStatus.RUNNING)
+            return
+
         lock_acquire_status = self.site_manager.get_locks(transaction,
                                                           LockType.WRITE,
                                                           variable)
@@ -95,6 +102,7 @@ class TransactionManager:
             log.info(transaction.name + " got write lock on " + variable)
             self.lock_table.set_lock(transaction,
                                      LockType.WRITE, variable)
+
             transaction.uncommitted_variables[variable] = value
             transaction.set_status(TransactionStatus.RUNNING)
 
@@ -138,7 +146,8 @@ class TransactionManager:
         if transaction.is_read_only:
 
             if variable in transaction.variable_values:
-                transaction.read_variables[variable] = transaction.variable_values[variable]
+                transaction.read_variables[
+                    variable] = transaction.variable_values[variable]
 
             else:
 
@@ -150,6 +159,15 @@ class TransactionManager:
 
         else:
 
+            if self.lock_table.is_locked_by_transaction(transaction, variable, LockType.READ) or \
+                    self.lock_table.is_locked_by_transaction(transaction, variable, LockType.WRITE):
+
+                log.info(transaction.name +
+                         " already has a read lock on " + variable)
+                transaction.uncommitted_variables[variable] = value
+                transaction.set_status(TransactionStatus.RUNNING)
+                return
+
             lock_acquire_status = self.site_manager.get_locks(transaction,
                                                               LockType.READ,
                                                               variable)
@@ -158,7 +176,8 @@ class TransactionManager:
 
                 log.info(transaction.name + " got read lock on " + variable +
                          " having value " + str(self.site_manager.get_current_variables(variable)))
-                transaction.read_variables[variable] = self.site_manager.get_current_variables(variable)
+                transaction.read_variables[
+                    variable] = self.site_manager.get_current_variables(variable)
 
                 self.lock_table.set_lock(transaction,
                                          LockType.READ, variable)
@@ -247,8 +266,10 @@ class TransactionManager:
 
         for key, block in self.blocked_transactions.items():
 
-            is_aborted = self.transaction_map[block[0]].get_status() == TransactionStatus.ABORTED
-            is_committed = self.transaction_map[block[0]].get_status() == TransactionStatus.COMMITTED
+            is_aborted = self.transaction_map[
+                block[0]].get_status() == TransactionStatus.ABORTED
+            is_committed = self.transaction_map[
+                block[0]].get_status() == TransactionStatus.COMMITTED
             if is_aborted or is_committed:
 
                 self.waiting_transactions[key] = (block[1],
