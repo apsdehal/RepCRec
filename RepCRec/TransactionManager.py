@@ -53,7 +53,7 @@ class TransactionManager:
             self.write_request(params)
 
         elif instruction.get_instruction_type() == END_FUNC:
-            self.commit_transaction(params[0])
+            self.end(params)
         else:
             log.info("We have a problem")
 
@@ -233,6 +233,8 @@ class TransactionManager:
 
             block = self.blocked_transactions[transaction][0]
 
+            if self.transaction_map[block].get_status() == TransactionStatus.ABORTED:
+                return 0
             if block in visited:
                 return visited[block]
             else:
@@ -259,7 +261,9 @@ class TransactionManager:
 
         for key, block in self.blocked_transactions.items():
 
-            if block[0] not in self.transaction_map:
+            is_aborted = self.transaction_map[block[0]].get_status() == TransactionStatus.ABORTED
+            is_committed = self.transaction_map[block[0]].get_status() == TransactionStatus.COMMITTED
+            if is_aborted or is_committed:
 
                 self.waiting_transactions[key] = (block[1],
                                                   block[2],
@@ -329,8 +333,7 @@ class TransactionManager:
             self.waiting_transactions.pop(transaction)
 
     def commit_transaction(self, name):
-
-        if name not in self.transaction_map:
+        if self.transaction_map[name].get_status() != TransactionStatus.RUNNING:
             return
 
         transaction = self.transaction_map[name]
@@ -345,11 +348,12 @@ class TransactionManager:
                     site.data_manager.write_variable(transaction,
                                                      variable,
                                                      value)
+        self.transaction_map[name].set_status(TransactionStatus.COMMITTED)
 
     def end(self, params):
-        self.commit_transaction(params[0])
-        self.clear_locks(params[0])
-        return
+        if self.transaction_map[params[0]].get_status() == TransactionStatus.RUNNING:
+            self.commit_transaction(params[0])
+            self.clear_locks(params[0])
 
     def fail(self):
         return
