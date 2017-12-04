@@ -22,6 +22,8 @@ class LockTable:
         if variable not in self.lock_map:
             return False
         else:
+            if len(self.lock_map[variable]) == 0:
+                return False
             return True
 
     def is_write_locked(self, variable):
@@ -52,6 +54,9 @@ class LockTable:
             try:
                 index = self.lock_map[variable].index(lock)
                 self.lock_map[variable] = self.lock_map[variable][:index] + self.lock_map[variable][index + 1:]
+
+                if len(self.lock_map[variable]):
+                    self.lock_map.pop(variable)
             except ValueError:
                 pass
 

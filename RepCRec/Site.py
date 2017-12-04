@@ -81,10 +81,11 @@ class Site:
 
         lock_map = lock_table.get_lock_map()
 
-        for variable, lock in lock_map.items():
-            log.info(lock.transaction.name + " aborted as site " +
-                     str(self.id) + " failed")
-            lock.transaction.set_status(TransactionStatus.ABORTED)
+        for variable, locks in lock_map.items():
+            for lock in locks:
+                log.info(lock.transaction.name + " aborted as site " +
+                         str(self.id) + " failed")
+                lock.transaction.set_status(TransactionStatus.ABORTED)
 
     def recover(self):
         # This would make sense once we actually kill the server

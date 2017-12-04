@@ -119,27 +119,33 @@ class TransactionManager:
 
         else:
 
-            lock = self.lock_table.lock_map[variable]
+            for lock in self.lock_table.lock_map[variable]:
 
-            blocking_transaction = lock.transaction.name
+                blocking_transaction = lock.transaction.name
 
-            if lock.transaction == transaction:
-                log.info(transaction.name + " is waiting on " + variable)
-                waiting_txn_tuple = (InstructionType.WRITE,
-                                     variable,
-                                     value)
-                transaction.set_status(TransactionStatus.WAITING)
-                self.waiting_transactions[transaction.name] = waiting_txn_tuple
-                return
+                if lock.transaction == transaction:
+                    log.info(transaction.name + " is waiting on " + variable)
+                    waiting_txn_tuple = (InstructionType.WRITE,
+                                         variable,
+                                         value)
+                    transaction.set_status(TransactionStatus.WAITING)
+                    self.waiting_transactions[transaction.name] = waiting_txn_tuple
+                    return
 
-            blocking_txn_tuple = (blocking_transaction,
-                                  InstructionType.WRITE,
-                                  variable,
-                                  value)
-            log.info(transaction.name + " is blocked by " +
-                     blocking_transaction + " on " + variable)
-            transaction.set_status(TransactionStatus.BLOCKED)
-            self.blocked_transactions[transaction_name] = blocking_txn_tuple
+                blocking_txn_tuple = (blocking_transaction,
+                                      InstructionType.WRITE,
+                                      variable,
+                                      value)
+                log.info(transaction.name + " is blocked by " +
+                         blocking_transaction + " on " + variable)
+                transaction.set_status(TransactionStatus.BLOCKED)
+
+                if transaction_name not in self.blocked_transactions:
+                    self.blocked_transactions[transaction_name] = []
+
+                self.blocked_transactions[
+                    transaction_name].append(blocking_txn_tuple)
+
 
     def read_request(self, params):
 
@@ -205,29 +211,30 @@ class TransactionManager:
                 self.waiting_transactions[transaction.name] = waiting_txn_tuple
 
             else:
+                for lock in self.lock_table.lock_map[variable]:
+                    blocking_transaction = lock.transaction.name
 
-                lock = self.lock_table.lock_map[variable]
+                    if lock.transaction == transaction:
+                        log.info(transaction.name + " is waiting on " + variable)
+                        waiting_txn_tuple = (InstructionType.READ,
+                                             value)
+                        transaction.set_status(TransactionStatus.WAITING)
+                        self.waiting_transactions[transaction.name] = waiting_txn_tuple
+                        return
 
-                blocking_transaction = lock.transaction.name
+                    blocking_txn_tuple = (blocking_transaction,
+                                          InstructionType.READ,
+                                          variable)
 
-                if lock.transaction == transaction:
-                    log.info(transaction.name + " is waiting on " + variable)
-                    waiting_txn_tuple = (InstructionType.READ,
-                                         value)
-                    transaction.set_status(TransactionStatus.WAITING)
-                    self.waiting_transactions[transaction.name] = waiting_txn_tuple
-                    return
+                    log.info(transaction.name + " is blocked by " +
+                             blocking_transaction + " on " + variable)
+                    transaction.set_status(TransactionStatus.BLOCKED)
 
-                blocking_txn_tuple = (blocking_transaction,
-                                      InstructionType.READ,
-                                      variable)
+                    if transaction_name not in self.blocked_transactions:
+                        self.blocked_transactions[transaction_name] = []
 
-                log.info(transaction.name + " is blocked by " +
-                         blocking_transaction + " on " + variable)
-                transaction.set_status(TransactionStatus.BLOCKED)
-
-                self.blocked_transactions[
-                    transaction_name] = blocking_txn_tuple
+                    self.blocked_transactions[
+                        transaction_name].append(blocking_txn_tuple)
 
     def clear_aborted(self):
 
@@ -255,14 +262,16 @@ class TransactionManager:
             visited[transaction] = len(current) + 1
             current.append(transaction)
 
-            block = self.blocked_transactions[transaction][0]
+            for block in self.blocked_transactions[transaction]:
+                block = block[0]
 
-            if self.transaction_map[block].get_status() == TransactionStatus.ABORTED:
-                return 0
-            if block in visited:
-                return visited[block]
-            else:
-                return self.detect_deadlock(block, visited, current)
+                if self.transaction_map[block].get_status() == TransactionStatus.ABORTED:
+                    continue
+                if block in visited:
+                    return visited[block]
+                else:
+                    return self.detect_deadlock(block, visited, current)
+            return 0
         else:
             return 0
 
@@ -285,12 +294,15 @@ class TransactionManager:
         to_pop = list()
 
         for key, block in self.blocked_transactions.items():
-            blocking_transaction = self.transaction_map[block[0]]
-            is_aborted = blocking_transaction.get_status() == TransactionStatus.ABORTED
-            is_committed = blocking_transaction.get_status() == TransactionStatus.COMMITTED
-            if is_aborted or is_committed:
+            is_clear = True
+            for blocking_transaction in block:
+                blocking_transaction = self.transaction_map[blocking_transaction[0]]
+                is_aborted = blocking_transaction.get_status() == TransactionStatus.ABORTED
+                is_committed = blocking_transaction.get_status() == TransactionStatus.COMMITTED
+                is_clear &= is_aborted or is_committed
 
-                self.waiting_transactions[key] = block[1:]
+            if is_clear:
+                self.waiting_transactions[key] = block[0][1:]
                 transaction = self.transaction_map[key]
                 transaction.set_status(TransactionStatus.WAITING)
                 to_pop.append(key)
@@ -310,17 +322,16 @@ class TransactionManager:
 
     def clear_locks(self, transaction):
         for var_name in list(self.lock_table.get_lock_map()):
-            lock = self.lock_table.get_lock_map()[var_name]
+            locks = self.lock_table.get_lock_map()[var_name]
+            for lock in locks:
+                if lock.transaction == transaction:
 
-            if lock.transaction == transaction:
-
-                log.info("Clearing locks for " + transaction.name +
-                         " variable: " + var_name)
-                self.site_manager.clear_locks(lock, var_name)
-                self.lock_table.free(var_name)
+                    log.info("Clearing locks for " + transaction.name +
+                             " variable: " + var_name)
+                    self.site_manager.clear_locks(lock, var_name)
+                    self.lock_table.clear_lock(lock, var_name)
 
     def try_waiting(self):
-
         to_pop = list()
         for transaction in self.waiting_transactions:
             params = self.waiting_transactions[transaction]
