@@ -1,0 +1,12 @@
+INFO - 2017-12-06 13:56:29,785 - Starting T1
+INFO - 2017-12-06 13:56:29,785 - Starting read only transaction T2
+INFO - 2017-12-06 13:56:29,785 - T1 got write lock on x3
+INFO - 2017-12-06 13:56:29,785 - T1 committed
+INFO - 2017-12-06 13:56:29,786 - Clearing locks for T1 variable: x3
+INFO - 2017-12-06 13:56:29,786 - Starting read only transaction T3
+INFO - 2017-12-06 13:56:29,786 - T2 read the value 10 of variable x1
+INFO - 2017-12-06 13:56:29,786 - T2 read the value 20 of variable x2
+INFO - 2017-12-06 13:56:29,786 - T2 read the value 30 of variable x3
+INFO - 2017-12-06 13:56:29,786 - T2 committed
+INFO - 2017-12-06 13:56:29,786 - T3 read the value 33 of variable x3
+INFO - 2017-12-06 13:56:29,786 - T3 committed

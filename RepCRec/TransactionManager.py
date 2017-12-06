@@ -58,6 +58,7 @@ class TransactionManager:
             log.info("We have a problem")
 
     def begin(self, params):
+
         current_index = len(self.transaction_map)
 
         log.info("Starting " + params[0])
@@ -65,8 +66,10 @@ class TransactionManager:
             current_index, params[0])
 
     def begin_read_only(self, params):
+
         current_index = len(self.transaction_map)
 
+        log.info("Starting read only transaction " + params[0])
         self.transaction_map[params[0]] = Transaction(
             current_index, params[0], True)
 
@@ -140,6 +143,22 @@ class TransactionManager:
                 self.blocked_transactions[
                     transaction_name].append(blocking_txn_tuple)
 
+    def read_request_read_only(self, transaction, variable, transaction_name):
+
+        if variable in transaction.variable_values:
+            transaction.read_variables[
+                variable] = transaction.variable_values[variable]
+
+        else:
+
+            transaction.set_status(TransactionStatus.WAITING)
+            waiting_txn = (transaction,
+                           InstructionType.READ,
+                           variable)
+            self.waiting_transactions[transaction_name] = waiting_txn
+
+        return
+
     def read_request(self, params):
 
         transaction_name = params[0]
@@ -157,18 +176,8 @@ class TransactionManager:
             return
 
         if transaction.is_read_only:
-
-            if variable in transaction.variable_values:
-                transaction.read_variables[
-                    variable] = transaction.variable_values[variable]
-
-            else:
-
-                transaction.set_status(TransactionStatus.WAITING)
-                waiting_txn = (transaction,
-                               InstructionType.READ,
-                               variable)
-                self.waiting_transactions[transaction_name] = waiting_txn
+            self.read_request_read_only(
+                transaction, variable, transaction_name)
 
         else:
 
@@ -184,9 +193,18 @@ class TransactionManager:
                                                               LockType.READ,
                                                               variable)
 
-            if lock_acquire_status == LockAcquireStatus.GOT_LOCK:
-                log.info(transaction.name + " got read lock on " + variable +
-                         " having value " + str(self.site_manager.get_current_variables(variable)))
+            if lock_acquire_status == LockAcquireStatus.GOT_LOCK or lock_acquire_status == LockAcquireStatus.GOT_LOCK_RECOVERING:
+
+                if lock_acquire_status == LockAcquireStatus.GOT_LOCK:
+
+                    log.info(transaction.name + " got read lock on " + variable +
+                             " having value " + str(self.site_manager.get_current_variables(variable)))
+
+                else:
+
+                    log.info("Although, the site holding " + variable + " is recovering, " + transaction.name + " got read lock on " +
+                             variable + " having value " + str(self.site_manager.get_current_variables(variable)) + " since its the only copy")
+
                 transaction.read_variables[
                     variable] = self.site_manager.get_current_variables(variable)
 
@@ -223,6 +241,8 @@ class TransactionManager:
 
                     self.blocked_transactions[
                         transaction_name].append(blocking_txn_tuple)
+
+        return
 
     def clear_aborted(self):
 
@@ -284,7 +304,8 @@ class TransactionManager:
         for key, block in self.blocked_transactions.items():
             is_clear = True
             for blocking_transaction in block:
-                blocking_transaction = self.transaction_map[blocking_transaction[0]]
+                blocking_transaction = self.transaction_map[
+                    blocking_transaction[0]]
                 is_aborted = blocking_transaction.get_status() == TransactionStatus.ABORTED
                 is_committed = blocking_transaction.get_status() == TransactionStatus.COMMITTED
                 is_clear &= is_aborted or is_committed

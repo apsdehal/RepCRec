@@ -23,13 +23,20 @@ class Site:
         self.status = SiteStatus.UP
         self.last_failure_time = None
         self.data_manager = DataManager(self.id)
+        self.recovered_variables = set()
+
+        for i in range(1, 21):
+
+            if i % 2 == 0 or (1 + i % 10) == self.id:
+                self.recovered_variables.add('x' + str(i))
 
     def set_status(self, status):
+
         if status in SiteStatus:
             self.status = status
         else:
-            # TODO: Throw an error here maybe?
-            return
+            log.error("Invalid Site status")
+        return
 
     def get_status(self):
         return self.status
@@ -44,17 +51,29 @@ class Site:
         self.last_failure_time = time
 
     def get_lock(self, transaction, typeof, variable):
-        return self.data_manager.get_lock(transaction, typeof, variable)
+
+        if self.data_manager.get_lock(transaction, typeof, variable):
+
+            self.recovered_variables.add(variable)
+
+            if len(self.recovered_variables) == len(self.data_manager.variable_map):
+                self.status = SiteStatus.UP
+
+            return True
+
+        return False
 
     def clear_lock(self, lock, variable):
         self.data_manager.clear_lock(lock, variable)
 
     def write_variable(self, transaction, variable, value):
-        if self.status != SiteStatus.DOWN:
+
+        if self.status != SiteStatus.DOWN and self.status != SiteStatus.RECOVERING:
+
             self.data_manager.write_variable(transaction,
                                              variable,
                                              value)
-            self.status = SiteStatus.UP
+            # self.status = SiteStatus.UP
 
     def listen(self):
         # TODO: Actually kill the server instead of sending 500
@@ -77,30 +96,49 @@ class Site:
     def fail(self):
 
         self.set_status(SiteStatus.DOWN)
+        self.recovered_variables = set()
         lock_table = self.data_manager.get_lock_table()
 
         lock_map = lock_table.get_lock_map()
 
         for variable, locks in lock_map.items():
+
             for lock in locks:
                 log.info(lock.transaction.name + " aborted as site " +
                          str(self.id) + " failed")
                 lock.transaction.set_status(TransactionStatus.ABORTED)
 
+        self.data_manager.lock_table.lock_map = dict()
+
     def recover(self):
         # This would make sense once we actually kill the server
+
+        for variable in self.data_manager.variable_map.keys():
+
+            if int(variable[1:]) % 2 != 0:
+                self.recovered_variables.add(variable)
+
         self.set_status(SiteStatus.RECOVERING)
 
     def dump_site(self):
+
         log.info("=== Site " + str(self.id) + " ===")
 
-        count = 1
+        count = 0
         for index in list(self.data_manager.variable_map):
+
             variable = self.data_manager.variable_map[index]
 
-            if variable.index % 2 == 0 and self.status == SiteStatus.RECOVERING:
-                log.info(variable.name + ":" +
-                         " is not available for reading")
+            if self.status == SiteStatus.RECOVERING:
+
+                count += 1
+
+                if variable.name not in self.recovered_variables:
+                    log.info(variable.name + ":" +
+                             " is not available for reading")
+                else:
+                    log.info(variable.name + ": " + str(variable.value) + " (available at site " +
+                             str(self.id) + " for reading as it is the only copy or has been written after recovery)")
                 continue
 
             if variable.value != int(index[1:]) * 10:

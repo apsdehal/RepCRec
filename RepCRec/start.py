@@ -39,7 +39,9 @@ class Main:
 
 if __name__ == "__main__":
 
-    logging.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s',
+    open('my_output.txt', 'w').close()
+
+    logging.basicConfig(filename='my_output.txt', format='%(levelname)s - %(asctime)s - %(message)s',
                         level=config['LOG_LEVEL'])
 
     main = plac.call(Main)

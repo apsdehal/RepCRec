@@ -1,0 +1,36 @@
+INFO - 2017-12-06 14:13:22,627 - Starting T1
+INFO - 2017-12-06 14:13:22,627 - Starting T2
+INFO - 2017-12-06 14:13:22,627 - Starting T3
+INFO - 2017-12-06 14:13:22,627 - Starting T4
+INFO - 2017-12-06 14:13:22,627 - Starting T5
+INFO - 2017-12-06 14:13:22,627 - T3 got read lock on x3 having value 30
+INFO - 2017-12-06 14:13:22,627 - Site 4 failed
+INFO - 2017-12-06 14:13:22,627 - T3 aborted as site 4 failed
+INFO - 2017-12-06 14:13:22,627 - Site 4 recovered
+INFO - 2017-12-06 14:13:22,628 - Clearing locks for T3 variable: x3
+INFO - 2017-12-06 14:13:22,628 - T4 got read lock on x4 having value 40
+INFO - 2017-12-06 14:13:22,628 - T5 got read lock on x5 having value 50
+INFO - 2017-12-06 14:13:22,628 - T1 got read lock on x1 having value 10
+INFO - 2017-12-06 14:13:22,628 - T2 got read lock on x2 having value 20
+DEBUG - 2017-12-06 14:13:22,628 - T1 did not get write lock on x2 site: 1
+INFO - 2017-12-06 14:13:22,628 - T1 is blocked by T2 on x2
+INFO - 2017-12-06 14:13:22,628 - T2 got write lock on x3
+DEBUG - 2017-12-06 14:13:22,628 - T5 did not get write lock on x1 site: 2
+INFO - 2017-12-06 14:13:22,628 - T5 is blocked by T1 on x1
+INFO - 2017-12-06 14:13:22,628 - T5 read the value 50 of variable x5
+INFO - 2017-12-06 14:13:22,628 - T5 committed
+INFO - 2017-12-06 14:13:22,628 - Clearing locks for T5 variable: x5
+INFO - 2017-12-06 14:13:22,629 - T4 got write lock on x5
+INFO - 2017-12-06 14:13:22,629 - T4 read the value 40 of variable x4
+INFO - 2017-12-06 14:13:22,629 - T4 committed
+INFO - 2017-12-06 14:13:22,629 - Clearing locks for T4 variable: x4
+INFO - 2017-12-06 14:13:22,629 - Clearing locks for T4 variable: x5
+INFO - 2017-12-06 14:13:22,629 - T2 read the value 20 of variable x2
+INFO - 2017-12-06 14:13:22,629 - T2 committed
+INFO - 2017-12-06 14:13:22,629 - Clearing locks for T2 variable: x2
+INFO - 2017-12-06 14:13:22,629 - Clearing locks for T2 variable: x3
+INFO - 2017-12-06 14:13:22,629 - T1 got write lock on x2
+INFO - 2017-12-06 14:13:22,629 - T1 read the value 10 of variable x1
+INFO - 2017-12-06 14:13:22,629 - T1 committed
+INFO - 2017-12-06 14:13:22,629 - Clearing locks for T1 variable: x1
+INFO - 2017-12-06 14:13:22,629 - Clearing locks for T1 variable: x2

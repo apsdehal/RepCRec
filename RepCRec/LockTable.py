@@ -56,10 +56,13 @@ class LockTable:
         self.lock_map.pop(variable)
 
     def clear_lock(self, lock, variable):
-        if variable in self.lock_map:
+
+        if variable in self.lock_map.keys():
             try:
                 index = self.lock_map[variable].index(lock)
-                self.lock_map[variable] = self.lock_map[variable][:index] + self.lock_map[variable][index + 1:]
+
+                self.lock_map[variable] = self.lock_map[variable][
+                    :index] + self.lock_map[variable][index + 1:]
 
                 if len(self.lock_map[variable]) == 0:
                     self.lock_map.pop(variable)
@@ -70,7 +73,9 @@ class LockTable:
     Return 0 if not present or if present and lock type doesn't match
     Return 1 if present and lock_type matches
     """
+
     def is_locked_by_transaction(self, current_transaction, variable, lock_type=None):
+
         if variable in self.lock_map:
             for lock in self.lock_map[variable]:
                 transaction = lock.get_transaction()

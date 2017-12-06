@@ -1,0 +1,64 @@
+INFO - 2017-12-06 13:54:02,466 - Starting T1
+INFO - 2017-12-06 13:54:02,467 - Starting T2
+INFO - 2017-12-06 13:54:02,467 - Site 3 failed
+INFO - 2017-12-06 13:54:02,467 - Site 4 failed
+INFO - 2017-12-06 13:54:02,467 - T1 got read lock on x1 having value 10
+INFO - 2017-12-06 13:54:02,468 - T2 got write lock on x8
+INFO - 2017-12-06 13:54:02,468 - T1 read the value 10 of variable x1
+INFO - 2017-12-06 13:54:02,468 - T1 committed
+INFO - 2017-12-06 13:54:02,468 - Clearing locks for T1 variable: x1
+INFO - 2017-12-06 13:54:02,468 - Site 4 recovered
+INFO - 2017-12-06 13:54:02,468 - Site 3 recovered
+INFO - 2017-12-06 13:54:02,468 - Although, the site holding x3 is recovering, T2 got read lock on x3 having value 30 since its the only copy
+INFO - 2017-12-06 13:54:02,470 - T2 read the value 30 of variable x3
+INFO - 2017-12-06 13:54:02,470 - T2 committed
+INFO - 2017-12-06 13:54:02,470 - Clearing locks for T2 variable: x8
+INFO - 2017-12-06 13:54:02,470 - Clearing locks for T2 variable: x3
+INFO - 2017-12-06 13:54:02,470 - === Site 1 ===
+INFO - 2017-12-06 13:54:02,470 - x8:  88 at site 1
+INFO - 2017-12-06 13:54:02,471 - All other variables have same initial value
+INFO - 2017-12-06 13:54:02,471 - === Site 2 ===
+INFO - 2017-12-06 13:54:02,471 - x8:  88 at site 2
+INFO - 2017-12-06 13:54:02,471 - All other variables have same initial value
+INFO - 2017-12-06 13:54:02,471 - === Site 3 ===
+INFO - 2017-12-06 13:54:02,471 - x2: is not available for reading
+INFO - 2017-12-06 13:54:02,471 - x4: is not available for reading
+INFO - 2017-12-06 13:54:02,471 - x6: is not available for reading
+INFO - 2017-12-06 13:54:02,471 - x8: is not available for reading
+INFO - 2017-12-06 13:54:02,471 - x10: is not available for reading
+INFO - 2017-12-06 13:54:02,471 - x12: is not available for reading
+INFO - 2017-12-06 13:54:02,471 - x14: is not available for reading
+INFO - 2017-12-06 13:54:02,472 - x16: is not available for reading
+INFO - 2017-12-06 13:54:02,472 - x18: is not available for reading
+INFO - 2017-12-06 13:54:02,472 - x20: is not available for reading
+INFO - 2017-12-06 13:54:02,472 - === Site 4 ===
+INFO - 2017-12-06 13:54:02,472 - x2: is not available for reading
+INFO - 2017-12-06 13:54:02,472 - x3: 30 (available at site 4 for reading as it is the only copy or has been written after recovery)
+INFO - 2017-12-06 13:54:02,472 - x4: is not available for reading
+INFO - 2017-12-06 13:54:02,472 - x6: is not available for reading
+INFO - 2017-12-06 13:54:02,472 - x8: is not available for reading
+INFO - 2017-12-06 13:54:02,472 - x10: is not available for reading
+INFO - 2017-12-06 13:54:02,472 - x12: is not available for reading
+INFO - 2017-12-06 13:54:02,473 - x13: 130 (available at site 4 for reading as it is the only copy or has been written after recovery)
+INFO - 2017-12-06 13:54:02,473 - x14: is not available for reading
+INFO - 2017-12-06 13:54:02,473 - x16: is not available for reading
+INFO - 2017-12-06 13:54:02,473 - x18: is not available for reading
+INFO - 2017-12-06 13:54:02,473 - x20: is not available for reading
+INFO - 2017-12-06 13:54:02,473 - === Site 5 ===
+INFO - 2017-12-06 13:54:02,473 - x8:  88 at site 5
+INFO - 2017-12-06 13:54:02,473 - All other variables have same initial value
+INFO - 2017-12-06 13:54:02,474 - === Site 6 ===
+INFO - 2017-12-06 13:54:02,474 - x8:  88 at site 6
+INFO - 2017-12-06 13:54:02,474 - All other variables have same initial value
+INFO - 2017-12-06 13:54:02,474 - === Site 7 ===
+INFO - 2017-12-06 13:54:02,474 - x8:  88 at site 7
+INFO - 2017-12-06 13:54:02,474 - All other variables have same initial value
+INFO - 2017-12-06 13:54:02,474 - === Site 8 ===
+INFO - 2017-12-06 13:54:02,474 - x8:  88 at site 8
+INFO - 2017-12-06 13:54:02,474 - All other variables have same initial value
+INFO - 2017-12-06 13:54:02,474 - === Site 9 ===
+INFO - 2017-12-06 13:54:02,474 - x8:  88 at site 9
+INFO - 2017-12-06 13:54:02,475 - All other variables have same initial value
+INFO - 2017-12-06 13:54:02,475 - === Site 10 ===
+INFO - 2017-12-06 13:54:02,475 - x8:  88 at site 10
+INFO - 2017-12-06 13:54:02,475 - All other variables have same initial value

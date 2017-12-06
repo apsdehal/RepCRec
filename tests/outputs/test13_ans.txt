@@ -1,0 +1,45 @@
+INFO - 2017-12-06 13:57:10,829 - Starting T1
+INFO - 2017-12-06 13:57:10,829 - Starting T2
+INFO - 2017-12-06 13:57:10,829 - Starting T3
+INFO - 2017-12-06 13:57:10,829 - T3 got write lock on x2
+DEBUG - 2017-12-06 13:57:10,829 - T2 did not get write lock on x2 site: 1
+DEBUG - 2017-12-06 13:57:10,829 - T2 did not get write lock on x2 site: 2
+DEBUG - 2017-12-06 13:57:10,830 - T2 did not get write lock on x2 site: 3
+DEBUG - 2017-12-06 13:57:10,830 - T2 did not get write lock on x2 site: 4
+DEBUG - 2017-12-06 13:57:10,830 - T2 did not get write lock on x2 site: 5
+DEBUG - 2017-12-06 13:57:10,830 - T2 did not get write lock on x2 site: 6
+DEBUG - 2017-12-06 13:57:10,830 - T2 did not get write lock on x2 site: 7
+DEBUG - 2017-12-06 13:57:10,830 - T2 did not get write lock on x2 site: 8
+DEBUG - 2017-12-06 13:57:10,831 - T2 did not get write lock on x2 site: 9
+DEBUG - 2017-12-06 13:57:10,831 - T2 did not get write lock on x2 site: 10
+INFO - 2017-12-06 13:57:10,831 - T2 is blocked by T3 on x2
+DEBUG - 2017-12-06 13:57:10,831 - T1 did not get write lock on x2 site: 1
+DEBUG - 2017-12-06 13:57:10,831 - T1 did not get write lock on x2 site: 2
+DEBUG - 2017-12-06 13:57:10,832 - T1 did not get write lock on x2 site: 3
+DEBUG - 2017-12-06 13:57:10,832 - T1 did not get write lock on x2 site: 4
+DEBUG - 2017-12-06 13:57:10,832 - T1 did not get write lock on x2 site: 5
+DEBUG - 2017-12-06 13:57:10,832 - T1 did not get write lock on x2 site: 6
+DEBUG - 2017-12-06 13:57:10,832 - T1 did not get write lock on x2 site: 7
+DEBUG - 2017-12-06 13:57:10,832 - T1 did not get write lock on x2 site: 8
+DEBUG - 2017-12-06 13:57:10,832 - T1 did not get write lock on x2 site: 9
+DEBUG - 2017-12-06 13:57:10,832 - T1 did not get write lock on x2 site: 10
+INFO - 2017-12-06 13:57:10,832 - T1 is blocked by T3 on x2
+INFO - 2017-12-06 13:57:10,832 - T3 committed
+INFO - 2017-12-06 13:57:10,832 - Clearing locks for T3 variable: x2
+INFO - 2017-12-06 13:57:10,832 - T2 got write lock on x2
+DEBUG - 2017-12-06 13:57:10,832 - T1 did not get write lock on x2 site: 1
+DEBUG - 2017-12-06 13:57:10,832 - T1 did not get write lock on x2 site: 2
+DEBUG - 2017-12-06 13:57:10,832 - T1 did not get write lock on x2 site: 3
+DEBUG - 2017-12-06 13:57:10,832 - T1 did not get write lock on x2 site: 4
+DEBUG - 2017-12-06 13:57:10,833 - T1 did not get write lock on x2 site: 5
+DEBUG - 2017-12-06 13:57:10,833 - T1 did not get write lock on x2 site: 6
+DEBUG - 2017-12-06 13:57:10,833 - T1 did not get write lock on x2 site: 7
+DEBUG - 2017-12-06 13:57:10,833 - T1 did not get write lock on x2 site: 8
+DEBUG - 2017-12-06 13:57:10,833 - T1 did not get write lock on x2 site: 9
+DEBUG - 2017-12-06 13:57:10,833 - T1 did not get write lock on x2 site: 10
+INFO - 2017-12-06 13:57:10,833 - T1 is blocked by T2 on x2
+INFO - 2017-12-06 13:57:10,833 - T2 committed
+INFO - 2017-12-06 13:57:10,833 - Clearing locks for T2 variable: x2
+INFO - 2017-12-06 13:57:10,833 - T1 got write lock on x2
+INFO - 2017-12-06 13:57:10,833 - T1 committed
+INFO - 2017-12-06 13:57:10,833 - Clearing locks for T1 variable: x2

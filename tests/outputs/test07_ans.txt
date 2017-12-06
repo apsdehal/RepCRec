@@ -1,0 +1,30 @@
+INFO - 2017-12-06 14:16:28,645 - Starting T1
+INFO - 2017-12-06 14:16:28,645 - Starting read only transaction T2
+INFO - 2017-12-06 14:16:28,645 - T1 got write lock on x3
+INFO - 2017-12-06 14:16:28,645 - T1 committed
+INFO - 2017-12-06 14:16:28,645 - Clearing locks for T1 variable: x3
+INFO - 2017-12-06 14:16:28,646 - T2 read the value 10 of variable x1
+INFO - 2017-12-06 14:16:28,646 - T2 read the value 20 of variable x2
+INFO - 2017-12-06 14:16:28,646 - T2 read the value 30 of variable x3
+INFO - 2017-12-06 14:16:28,646 - T2 committed
+INFO - 2017-12-06 14:16:28,646 - === Site 1 ===
+INFO - 2017-12-06 14:16:28,646 - All other variables have same initial value
+INFO - 2017-12-06 14:16:28,646 - === Site 2 ===
+INFO - 2017-12-06 14:16:28,646 - All other variables have same initial value
+INFO - 2017-12-06 14:16:28,646 - === Site 3 ===
+INFO - 2017-12-06 14:16:28,646 - All other variables have same initial value
+INFO - 2017-12-06 14:16:28,646 - === Site 4 ===
+INFO - 2017-12-06 14:16:28,646 - x3:  33 at site 4
+INFO - 2017-12-06 14:16:28,646 - All other variables have same initial value
+INFO - 2017-12-06 14:16:28,646 - === Site 5 ===
+INFO - 2017-12-06 14:16:28,646 - All other variables have same initial value
+INFO - 2017-12-06 14:16:28,646 - === Site 6 ===
+INFO - 2017-12-06 14:16:28,646 - All other variables have same initial value
+INFO - 2017-12-06 14:16:28,646 - === Site 7 ===
+INFO - 2017-12-06 14:16:28,646 - All other variables have same initial value
+INFO - 2017-12-06 14:16:28,646 - === Site 8 ===
+INFO - 2017-12-06 14:16:28,646 - All other variables have same initial value
+INFO - 2017-12-06 14:16:28,646 - === Site 9 ===
+INFO - 2017-12-06 14:16:28,646 - All other variables have same initial value
+INFO - 2017-12-06 14:16:28,647 - === Site 10 ===
+INFO - 2017-12-06 14:16:28,647 - All other variables have same initial value

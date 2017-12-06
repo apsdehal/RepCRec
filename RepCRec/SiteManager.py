@@ -34,20 +34,38 @@ class SiteManager:
         sites = self.get_site_range(sites)
 
         flag = 1
+        recovering_flag = 0
         all_sites_down = 1
         even_index = int(variable[1:]) % 2 == 0
 
         for site in sites:
+
             status = self.sites[site].get_status()
             if status == SiteStatus.DOWN:
                 continue
-            if status == SiteStatus.RECOVERING and typeof == LockType.READ and even_index:
-                continue
+            # if status == SiteStatus.RECOVERING and typeof == LockType.READ:
+            if status == SiteStatus.RECOVERING:
+
+                if variable not in self.sites[site].recovered_variables:
+                    continue
+
+                elif not even_index:
+                    recovering_flag = 1
+                # if even_index:
+                #     continue
+                # else:
+                #     recovering_flag = 1
 
             all_sites_down = 0
+
             state = self.sites[site].get_lock(transaction, typeof, variable)
+
             if state == 1 and typeof == LockType.READ:
-                return LockAcquireStatus.GOT_LOCK
+
+                if recovering_flag:
+                    return LockAcquireStatus.GOT_LOCK_RECOVERING
+                else:
+                    return LockAcquireStatus.GOT_LOCK
             flag &= state
 
         if all_sites_down == 1:

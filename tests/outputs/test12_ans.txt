@@ -1,0 +1,12 @@
+INFO - 2017-12-06 13:57:05,346 - Starting T1
+INFO - 2017-12-06 13:57:05,347 - Starting T2
+INFO - 2017-12-06 13:57:05,347 - T1 got read lock on x2 having value 20
+INFO - 2017-12-06 13:57:05,347 - T2 got read lock on x2 having value 20
+INFO - 2017-12-06 13:57:05,347 - T1 read the value 20 of variable x2
+INFO - 2017-12-06 13:57:05,347 - T1 committed
+INFO - 2017-12-06 13:57:05,347 - Clearing locks for T1 variable: x2
+INFO - 2017-12-06 13:57:05,347 - T2 got write lock on x2
+INFO - 2017-12-06 13:57:05,347 - T2 read the value 20 of variable x2
+INFO - 2017-12-06 13:57:05,347 - T2 committed
+INFO - 2017-12-06 13:57:05,347 - Clearing locks for T2 variable: x2
+INFO - 2017-12-06 13:57:05,347 - Clearing locks for T2 variable: x2

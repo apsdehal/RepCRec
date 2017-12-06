@@ -1,0 +1,82 @@
+INFO - 2017-12-06 13:57:23,272 - Starting T5
+INFO - 2017-12-06 13:57:23,272 - Starting T4
+INFO - 2017-12-06 13:57:23,272 - Starting T3
+INFO - 2017-12-06 13:57:23,272 - Starting T2
+INFO - 2017-12-06 13:57:23,272 - Starting T1
+INFO - 2017-12-06 13:57:23,272 - T1 got write lock on x4
+INFO - 2017-12-06 13:57:23,272 - Site 2 failed
+INFO - 2017-12-06 13:57:23,273 - T1 aborted as site 2 failed
+INFO - 2017-12-06 13:57:23,273 - Clearing locks for T1 variable: x4
+INFO - 2017-12-06 13:57:23,273 - T2 got write lock on x4
+INFO - 2017-12-06 13:57:23,273 - Site 2 recovered
+DEBUG - 2017-12-06 13:57:23,273 - T3 did not get write lock on x4 site: 1
+DEBUG - 2017-12-06 13:57:23,273 - T3 did not get write lock on x4 site: 3
+DEBUG - 2017-12-06 13:57:23,273 - T3 did not get write lock on x4 site: 4
+DEBUG - 2017-12-06 13:57:23,274 - T3 did not get write lock on x4 site: 5
+DEBUG - 2017-12-06 13:57:23,274 - T3 did not get write lock on x4 site: 6
+DEBUG - 2017-12-06 13:57:23,274 - T3 did not get write lock on x4 site: 7
+DEBUG - 2017-12-06 13:57:23,274 - T3 did not get write lock on x4 site: 8
+DEBUG - 2017-12-06 13:57:23,274 - T3 did not get write lock on x4 site: 9
+DEBUG - 2017-12-06 13:57:23,274 - T3 did not get write lock on x4 site: 10
+INFO - 2017-12-06 13:57:23,275 - T3 is blocked by T2 on x4
+DEBUG - 2017-12-06 13:57:23,275 - T4 did not get write lock on x4 site: 1
+DEBUG - 2017-12-06 13:57:23,275 - T4 did not get write lock on x4 site: 3
+DEBUG - 2017-12-06 13:57:23,275 - T4 did not get write lock on x4 site: 4
+DEBUG - 2017-12-06 13:57:23,275 - T4 did not get write lock on x4 site: 5
+DEBUG - 2017-12-06 13:57:23,275 - T4 did not get write lock on x4 site: 6
+DEBUG - 2017-12-06 13:57:23,275 - T4 did not get write lock on x4 site: 7
+DEBUG - 2017-12-06 13:57:23,275 - T4 did not get write lock on x4 site: 8
+DEBUG - 2017-12-06 13:57:23,275 - T4 did not get write lock on x4 site: 9
+DEBUG - 2017-12-06 13:57:23,275 - T4 did not get write lock on x4 site: 10
+INFO - 2017-12-06 13:57:23,275 - T4 is blocked by T2 on x4
+DEBUG - 2017-12-06 13:57:23,275 - T5 did not get write lock on x4 site: 1
+DEBUG - 2017-12-06 13:57:23,275 - T5 did not get write lock on x4 site: 3
+DEBUG - 2017-12-06 13:57:23,275 - T5 did not get write lock on x4 site: 4
+DEBUG - 2017-12-06 13:57:23,275 - T5 did not get write lock on x4 site: 5
+DEBUG - 2017-12-06 13:57:23,275 - T5 did not get write lock on x4 site: 6
+DEBUG - 2017-12-06 13:57:23,275 - T5 did not get write lock on x4 site: 7
+DEBUG - 2017-12-06 13:57:23,275 - T5 did not get write lock on x4 site: 8
+DEBUG - 2017-12-06 13:57:23,275 - T5 did not get write lock on x4 site: 9
+DEBUG - 2017-12-06 13:57:23,276 - T5 did not get write lock on x4 site: 10
+INFO - 2017-12-06 13:57:23,276 - T5 is blocked by T2 on x4
+INFO - 2017-12-06 13:57:23,276 - T2 committed
+INFO - 2017-12-06 13:57:23,276 - Clearing locks for T2 variable: x4
+INFO - 2017-12-06 13:57:23,276 - T3 got write lock on x4
+DEBUG - 2017-12-06 13:57:23,276 - T4 did not get write lock on x4 site: 1
+DEBUG - 2017-12-06 13:57:23,276 - T4 did not get write lock on x4 site: 3
+DEBUG - 2017-12-06 13:57:23,276 - T4 did not get write lock on x4 site: 4
+DEBUG - 2017-12-06 13:57:23,276 - T4 did not get write lock on x4 site: 5
+DEBUG - 2017-12-06 13:57:23,276 - T4 did not get write lock on x4 site: 6
+DEBUG - 2017-12-06 13:57:23,276 - T4 did not get write lock on x4 site: 7
+DEBUG - 2017-12-06 13:57:23,276 - T4 did not get write lock on x4 site: 8
+DEBUG - 2017-12-06 13:57:23,276 - T4 did not get write lock on x4 site: 9
+DEBUG - 2017-12-06 13:57:23,276 - T4 did not get write lock on x4 site: 10
+INFO - 2017-12-06 13:57:23,276 - T4 is blocked by T3 on x4
+DEBUG - 2017-12-06 13:57:23,276 - T5 did not get write lock on x4 site: 1
+DEBUG - 2017-12-06 13:57:23,276 - T5 did not get write lock on x4 site: 3
+DEBUG - 2017-12-06 13:57:23,276 - T5 did not get write lock on x4 site: 4
+DEBUG - 2017-12-06 13:57:23,277 - T5 did not get write lock on x4 site: 5
+DEBUG - 2017-12-06 13:57:23,277 - T5 did not get write lock on x4 site: 6
+DEBUG - 2017-12-06 13:57:23,277 - T5 did not get write lock on x4 site: 7
+DEBUG - 2017-12-06 13:57:23,277 - T5 did not get write lock on x4 site: 8
+DEBUG - 2017-12-06 13:57:23,277 - T5 did not get write lock on x4 site: 9
+DEBUG - 2017-12-06 13:57:23,277 - T5 did not get write lock on x4 site: 10
+INFO - 2017-12-06 13:57:23,277 - T5 is blocked by T3 on x4
+INFO - 2017-12-06 13:57:23,277 - T3 committed
+INFO - 2017-12-06 13:57:23,277 - Clearing locks for T3 variable: x4
+INFO - 2017-12-06 13:57:23,277 - T4 got write lock on x4
+DEBUG - 2017-12-06 13:57:23,277 - T5 did not get write lock on x4 site: 1
+DEBUG - 2017-12-06 13:57:23,277 - T5 did not get write lock on x4 site: 3
+DEBUG - 2017-12-06 13:57:23,277 - T5 did not get write lock on x4 site: 4
+DEBUG - 2017-12-06 13:57:23,277 - T5 did not get write lock on x4 site: 5
+DEBUG - 2017-12-06 13:57:23,277 - T5 did not get write lock on x4 site: 6
+DEBUG - 2017-12-06 13:57:23,277 - T5 did not get write lock on x4 site: 7
+DEBUG - 2017-12-06 13:57:23,277 - T5 did not get write lock on x4 site: 8
+DEBUG - 2017-12-06 13:57:23,277 - T5 did not get write lock on x4 site: 9
+DEBUG - 2017-12-06 13:57:23,277 - T5 did not get write lock on x4 site: 10
+INFO - 2017-12-06 13:57:23,277 - T5 is blocked by T4 on x4
+INFO - 2017-12-06 13:57:23,278 - T4 committed
+INFO - 2017-12-06 13:57:23,278 - Clearing locks for T4 variable: x4
+INFO - 2017-12-06 13:57:23,278 - T5 got write lock on x4
+INFO - 2017-12-06 13:57:23,278 - T5 committed
+INFO - 2017-12-06 13:57:23,278 - Clearing locks for T5 variable: x4

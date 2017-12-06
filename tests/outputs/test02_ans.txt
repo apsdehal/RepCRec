@@ -1,0 +1,41 @@
+INFO - 2017-12-04 16:47:26,517 - Starting T1
+INFO - 2017-12-04 16:47:26,517 - Starting read only transaction T2
+INFO - 2017-12-04 16:47:26,517 - T1 got write lock on x1
+INFO - 2017-12-04 16:47:26,517 - T1 got write lock on x2
+INFO - 2017-12-04 16:47:26,517 - T1 committed
+INFO - 2017-12-04 16:47:26,517 - Clearing locks for T1 variable: x1
+INFO - 2017-12-04 16:47:26,518 - Clearing locks for T1 variable: x2
+INFO - 2017-12-04 16:47:26,518 - T2 read the value 20 of variable x2
+INFO - 2017-12-04 16:47:26,518 - T2 read the value 10 of variable x1
+INFO - 2017-12-04 16:47:26,518 - T2 committed
+INFO - 2017-12-04 16:47:26,518 - === Site 1 ===
+INFO - 2017-12-04 16:47:26,518 - x2:  102 at site 1
+INFO - 2017-12-04 16:47:26,518 - All other variables have same initial value
+INFO - 2017-12-04 16:47:26,518 - === Site 2 ===
+INFO - 2017-12-04 16:47:26,518 - x1:  101 at site 2
+INFO - 2017-12-04 16:47:26,518 - x2:  102 at site 2
+INFO - 2017-12-04 16:47:26,518 - All other variables have same initial value
+INFO - 2017-12-04 16:47:26,518 - === Site 3 ===
+INFO - 2017-12-04 16:47:26,518 - x2:  102 at site 3
+INFO - 2017-12-04 16:47:26,518 - All other variables have same initial value
+INFO - 2017-12-04 16:47:26,518 - === Site 4 ===
+INFO - 2017-12-04 16:47:26,518 - x2:  102 at site 4
+INFO - 2017-12-04 16:47:26,518 - All other variables have same initial value
+INFO - 2017-12-04 16:47:26,518 - === Site 5 ===
+INFO - 2017-12-04 16:47:26,518 - x2:  102 at site 5
+INFO - 2017-12-04 16:47:26,518 - All other variables have same initial value
+INFO - 2017-12-04 16:47:26,518 - === Site 6 ===
+INFO - 2017-12-04 16:47:26,518 - x2:  102 at site 6
+INFO - 2017-12-04 16:47:26,519 - All other variables have same initial value
+INFO - 2017-12-04 16:47:26,519 - === Site 7 ===
+INFO - 2017-12-04 16:47:26,519 - x2:  102 at site 7
+INFO - 2017-12-04 16:47:26,519 - All other variables have same initial value
+INFO - 2017-12-04 16:47:26,519 - === Site 8 ===
+INFO - 2017-12-04 16:47:26,519 - x2:  102 at site 8
+INFO - 2017-12-04 16:47:26,519 - All other variables have same initial value
+INFO - 2017-12-04 16:47:26,519 - === Site 9 ===
+INFO - 2017-12-04 16:47:26,519 - x2:  102 at site 9
+INFO - 2017-12-04 16:47:26,519 - All other variables have same initial value
+INFO - 2017-12-04 16:47:26,519 - === Site 10 ===
+INFO - 2017-12-04 16:47:26,519 - x2:  102 at site 10
+INFO - 2017-12-04 16:47:26,519 - All other variables have same initial value
