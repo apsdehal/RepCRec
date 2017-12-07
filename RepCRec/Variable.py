@@ -1,3 +1,8 @@
+"""
+Authors:
+Amanpreet Singh
+Sharan Agrawal
+"""
 import copy
 
 from .enums.LockType import LockType

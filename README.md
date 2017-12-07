@@ -5,7 +5,7 @@ Replicated Concurrency Control and Recovery project for Advanced Database Class 
 
 ## Features
 
-- Use multiversion concurrency control to read locks to transactions
+- Uses multiversion concurrency control to read locks to transactions
 - Deadlock detection and clearance in case of blocked transactions
 - Replication of variables for better accessibility on websites
 - Site failure recovery for transactions
@@ -64,7 +64,7 @@ This will provide you with results of various tests run and diffs of failures if
 
 ## Acknowledgements
 
-We would like to Acknowledge Prof. Dennis Shasha for his constant support, prompt question answering and lectures this semester.
+We would like to acknowledge Prof. Dennis Shasha for his constant support, prompt question answering and lectures this semester.
 
 ## License
 MIT

@@ -1,3 +1,8 @@
+"""
+Authors:
+Amanpreet Singh
+Sharan Agrawal
+"""
 import logging
 
 from .LockTable import LockTable
@@ -49,8 +54,9 @@ class DataManager:
         return
 
     def get_lock(self, transaction, lock_type, variable):
-        is_locked_by_txn = self.lock_table.is_locked_by_transaction(transaction,
-                                                                    variable)
+        is_locked_by_txn = self.lock_table.is_locked_by_transaction(
+            transaction,
+            variable)
 
         if is_locked_by_txn:
             if self.lock_table.get_len_locks(variable) == 1:
@@ -62,7 +68,8 @@ class DataManager:
            not self.lock_table.is_locked(variable):
             self.lock_table.set_lock(transaction, lock_type, variable)
             return True
-        elif lock_type == LockType.READ and not self.lock_table.is_write_locked(variable):
+        elif lock_type == LockType.READ and \
+                not self.lock_table.is_write_locked(variable):
             self.lock_table.set_lock(transaction, lock_type, variable)
             return True
         else:
@@ -71,13 +78,13 @@ class DataManager:
             return False
 
     def write_variable(self, transaction, variable_name, value):
-        # if self.lock_table.is_locked_by_transaction(transaction,
-        #                                             variable_name,
-        #                                             LockType.WRITE):
-        self.variable_map[variable_name].set_value(value)
-            # return True
-        # else:
-        #     return False
+        if self.lock_table.is_locked_by_transaction(transaction,
+                                                    variable_name,
+                                                    LockType.WRITE):
+            self.variable_map[variable_name].set_value(value)
+            return True
+        else:
+            return False
 
     def read_variable(self, transaction, variable_name):
         return None

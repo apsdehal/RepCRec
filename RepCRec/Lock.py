@@ -1,3 +1,8 @@
+"""
+Authors:
+Amanpreet Singh
+Sharan Agrawal
+"""
 from .enums.LockType import LockType
 from .Transaction import Transaction
 
@@ -18,16 +23,14 @@ class Lock:
         if lock_type in LockType:
             self.lock_type = lock_type
         else:
-            # TODO: Throw some kind of error here
-            return
+            raise ValueError("Not a valid lock type")
 
     def set_transaction(self, transaction=None):
         if isinstance(transaction, Transaction) \
            or transaction is None:
             self.transaction = transaction
         else:
-            # TODO throw some kind of error here also
-            return
+            raise RuntimeError("Not a valid transaction")
 
     def __eq__(self, other):
         if isinstance(self, other.__class__):

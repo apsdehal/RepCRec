@@ -1,3 +1,8 @@
+"""
+Authors:
+Amanpreet Singh
+Sharan Agrawal
+"""
 from enum import Enum
 
 

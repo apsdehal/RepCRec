@@ -1,3 +1,8 @@
+"""
+Authors:
+Sharan Agrawal
+Amanpreet Singh
+"""
 import logging
 
 from tornado.ioloop import IOLoop
@@ -43,7 +48,7 @@ class SiteManager:
             status = self.sites[site].get_status()
             if status == SiteStatus.DOWN:
                 continue
-            # if status == SiteStatus.RECOVERING and typeof == LockType.READ:
+
             if status == SiteStatus.RECOVERING:
 
                 if variable not in self.sites[site].recovered_variables:
@@ -51,10 +56,6 @@ class SiteManager:
 
                 elif not even_index:
                     recovering_flag = 1
-                # if even_index:
-                #     continue
-                # else:
-                #     recovering_flag = 1
 
             all_sites_down = 0
 

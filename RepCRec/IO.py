@@ -1,3 +1,8 @@
+"""
+Authors:
+Amanpreet Singh
+Sharan Agrawal
+"""
 import os
 from .Instruction import Instruction
 from .Variable import Variable

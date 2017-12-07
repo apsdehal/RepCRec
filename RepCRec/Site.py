@@ -1,3 +1,8 @@
+"""
+Authors:
+Amanpreet Singh
+Sharan Agrawal
+"""
 import logging
 
 from tornado import web, gen, process, httpserver, netutil
@@ -56,7 +61,8 @@ class Site:
 
             self.recovered_variables.add(variable)
 
-            if len(self.recovered_variables) == len(self.data_manager.variable_map):
+            if len(self.recovered_variables) ==  \
+                    len(self.data_manager.variable_map):
                 self.status = SiteStatus.UP
 
             return True
@@ -68,7 +74,8 @@ class Site:
 
     def write_variable(self, transaction, variable, value):
 
-        if self.status != SiteStatus.DOWN and self.status != SiteStatus.RECOVERING:
+        if self.status != SiteStatus.DOWN and \
+                self.status != SiteStatus.RECOVERING:
 
             self.data_manager.write_variable(transaction,
                                              variable,
@@ -138,8 +145,10 @@ class Site:
                     log.info(variable.name + ":" +
                              " is not available for reading")
                 else:
-                    log.info(variable.name + ": " + str(variable.value) + " (available at site " +
-                             str(self.id) + " for reading as it is the only copy or has been written after recovery)")
+                    log.info(variable.name + ": " + str(variable.value) +
+                             " (available at site " + str(self.id) +
+                             " for reading as it is the only" +
+                             " copy or has been written after recovery)")
                 continue
 
             if variable.value != int(index[1:]) * 10:

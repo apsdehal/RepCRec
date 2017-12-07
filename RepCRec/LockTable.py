@@ -1,3 +1,8 @@
+"""
+Authors:
+Amanpreet Singh
+Sharan Agrawal
+"""
 from .enums.LockType import LockType
 from .Lock import Lock
 
@@ -71,10 +76,12 @@ class LockTable:
 
     """
     Return 0 if not present or if present and lock type doesn't match
-    Return 1 if present and lock_type matches
+    Return 1 if present and lock_type is passed and matches
+    Return 1 if present and no lock type passed
     """
 
-    def is_locked_by_transaction(self, current_transaction, variable, lock_type=None):
+    def is_locked_by_transaction(self, current_transaction, variable,
+                                 lock_type=None):
 
         if variable in self.lock_map:
             for lock in self.lock_map[variable]:

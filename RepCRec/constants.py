@@ -1,3 +1,7 @@
+"""
+Authors:
+Amanpreet Singh
+"""
 BEGIN_FUNC = "begin"
 BEGIN_READ_ONLY_FUNC = "beginRO"
 READ_FUNC = "R"

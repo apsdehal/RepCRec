@@ -1,4 +1,8 @@
-# Revise this module again according to design doc
+"""
+Authors:
+Amanpreet Singh
+Sharan Agrawal
+"""
 import logging
 
 from .Transaction import Transaction
@@ -74,7 +78,8 @@ class TransactionManager:
             current_index, params[0], True)
 
         self.transaction_map[
-            params[0]].variable_values = self.site_manager.get_current_variables()
+            params[0]].variable_values = \
+            self.site_manager.get_current_variables()
 
     def write_request(self, params):
         transaction_name = params[0]
@@ -91,7 +96,8 @@ class TransactionManager:
 
         if not (is_waiting or is_running):
             return
-        if self.lock_table.is_locked_by_transaction(transaction, variable, LockType.WRITE):
+        if self.lock_table.is_locked_by_transaction(transaction, variable,
+                                                    LockType.WRITE):
 
             log.info(transaction.name +
                      " already has a write lock on " + variable)
@@ -181,8 +187,11 @@ class TransactionManager:
 
         else:
 
-            if self.lock_table.is_locked_by_transaction(transaction, variable, LockType.READ) or \
-                    self.lock_table.is_locked_by_transaction(transaction, variable, LockType.WRITE):
+            if self.lock_table.is_locked_by_transaction(transaction, variable,
+                                                        LockType.READ) or \
+                    self.lock_table.is_locked_by_transaction(transaction,
+                                                             variable,
+                                                             LockType.WRITE):
 
                 log.info(transaction.name +
                          " already has a read lock on " + variable)
@@ -193,20 +202,29 @@ class TransactionManager:
                                                               LockType.READ,
                                                               variable)
 
-            if lock_acquire_status == LockAcquireStatus.GOT_LOCK or lock_acquire_status == LockAcquireStatus.GOT_LOCK_RECOVERING:
+            if lock_acquire_status == LockAcquireStatus.GOT_LOCK or \
+                    lock_acquire_status == \
+                    LockAcquireStatus.GOT_LOCK_RECOVERING:
 
                 if lock_acquire_status == LockAcquireStatus.GOT_LOCK:
 
-                    log.info(transaction.name + " got read lock on " + variable +
-                             " having value " + str(self.site_manager.get_current_variables(variable)))
+                    log.info(transaction.name + " got read lock on " +
+                             variable + " having value " +
+                             str(self.site_manager.get_current_variables(
+                                 variable)))
 
                 else:
 
-                    log.info("Although, the site holding " + variable + " is recovering, " + transaction.name + " got read lock on " +
-                             variable + " having value " + str(self.site_manager.get_current_variables(variable)) + " since its the only copy")
+                    log.info("Although, the site holding " + variable +
+                             " is recovering, " + transaction.name +
+                             " got read lock on " +
+                             variable + " having value " +
+                             str(self.site_manager.get_current_variables(
+                                 variable)) + " since its the only copy")
 
                 transaction.read_variables[
-                    variable] = self.site_manager.get_current_variables(variable)
+                    variable] = \
+                    self.site_manager.get_current_variables(variable)
 
                 self.lock_table.set_lock(transaction,
                                          LockType.READ, variable)
@@ -273,7 +291,8 @@ class TransactionManager:
             for block in self.blocked_transactions[transaction]:
                 block = block[0]
 
-                if self.transaction_map[block].get_status() == TransactionStatus.ABORTED:
+                if self.transaction_map[block].get_status() == \
+                        TransactionStatus.ABORTED:
                     continue
                 if block in visited:
                     return visited[block]
@@ -306,8 +325,10 @@ class TransactionManager:
             for blocking_transaction in block:
                 blocking_transaction = self.transaction_map[
                     blocking_transaction[0]]
-                is_aborted = blocking_transaction.get_status() == TransactionStatus.ABORTED
-                is_committed = blocking_transaction.get_status() == TransactionStatus.COMMITTED
+                is_aborted = blocking_transaction.get_status() == \
+                    TransactionStatus.ABORTED
+                is_committed = blocking_transaction.get_status() == \
+                    TransactionStatus.COMMITTED
                 is_clear &= is_aborted or is_committed
 
             if is_clear:
@@ -360,7 +381,8 @@ class TransactionManager:
 
     def commit_transaction(self, name):
         status = self.transaction_map[name].get_status()
-        if status == TransactionStatus.COMMITTED or status == TransactionStatus.ABORTED:
+        if status == TransactionStatus.COMMITTED or \
+                status == TransactionStatus.ABORTED:
             return
 
         transaction = self.transaction_map[name]
@@ -385,7 +407,8 @@ class TransactionManager:
 
     def end(self, params):
         status = self.transaction_map[params[0]].get_status()
-        if status == TransactionStatus.COMMITTED or status == TransactionStatus.ABORTED:
+        if status == TransactionStatus.COMMITTED or \
+                status == TransactionStatus.ABORTED:
             return
 
         self.commit_transaction(params[0])
