@@ -23,17 +23,21 @@ log = logging.getLogger(__name__)
 class TransactionManager:
     """
     Transaction manager class is reponsible for processing transactions
-    and deadlock detection and resolution. It is also responsible for calling site manager
-    to clear locks when a transaction commits.
+    and deadlock detection and resolution. It is also responsible for
+    calling site manager to clear locks when a transaction commits.
 
     Attributes:
         num_vars (int): Number of variables
         num_sites (int): Number of sites
         lock_table (class object): Global instance of LockTable
         site_manager (class object): Global instance of SiteManager
-        transaction_map (dict): Maps transaction name to Transaction class object
-        blocked_transactions (dict): stores blocked transaction name mapped to blocking transaction tuple (transaction name, lock type, variable etc)
-        waiting_transaction (dict): stores waiting transaction name mapped to a tuple containing relevant information
+        transaction_map (dict): Maps transaction name to Transaction class
+                                object
+        blocked_transactions (dict): stores blocked transaction name mapped to
+                                     blocking transaction tuple
+                                     (transaction name, lock type, variable, .)
+        waiting_transaction (dict): stores waiting transaction name mapped to
+                                    a tuple containing relevant information
     """
 
     def __init__(self, num_vars, num_sites, lock_table, site_manager):
@@ -53,7 +57,8 @@ class TransactionManager:
         Also checks for deadlocks on every tick
 
         Args:
-            instruction : object of class Instruction, contains the current instruction
+            instruction : object of class Instruction, contains the
+                          current instruction
 
         """
         self.current_time += 1
@@ -86,10 +91,12 @@ class TransactionManager:
 
     def begin(self, params):
         """
-        Method responsible for initializing a transaction and making a new instance of Transaction class
+        Method responsible for initializing a transaction and making a new
+        instance of Transaction class
 
         Args:
-            params : list of parameters of the parsed instruction, containing instruction name
+            params : list of parameters of the parsed instruction, containing
+                     instruction name
 
         """
 
@@ -103,10 +110,12 @@ class TransactionManager:
 
     def begin_read_only(self, params):
         """
-        Method responsible for initializing a read only transaction and making a new instance of Transaction class
+        Method responsible for initializing a read only transaction and making
+        a new instance of Transaction class
 
         Args:
-            params : list of parameters of the parsed instruction, containing instruction name
+            params : list of parameters of the parsed instruction, containing
+                     instruction name
 
         """
 
@@ -122,12 +131,16 @@ class TransactionManager:
 
     def write_request(self, params):
         """
-        Method responsible for processing a write request, gets write locks on the variable to be written,
-        in case it is not able to get locks, changes status to blocked or waiting according to situation.
-        Also inserts transactions in waiting or blocked transaction dicts as required.
+        Method responsible for processing a write request, gets write locks on
+        the variable to be written,
+        in case it is not able to get locks, changes status to blocked or
+        waiting according to situation.
+        Also inserts transactions in waiting or blocked transaction dicts
+        as required.
 
         Args:
-            params : list of parameters of the parsed instruction, containing instruction name
+            params : list of parameters of the parsed instruction, containing
+                     instruction name
 
         """
 
@@ -189,7 +202,8 @@ class TransactionManager:
                                       InstructionType.WRITE,
                                       variable,
                                       value)
-                log.info(transaction.name + " is blocked for a write lock by " +
+                log.info(transaction.name +
+                         " is blocked for a write lock by " +
                          blocking_transaction + " on " + variable)
                 transaction.set_status(TransactionStatus.BLOCKED)
 
@@ -200,13 +214,17 @@ class TransactionManager:
                 self.blocked_transactions[self.current_time][
                     transaction_name] = blocking_txn_tuple
 
-    def read_request_read_only(self, transaction, variable, transaction_name, try_waiting):
+    def read_request_read_only(self, transaction, variable, transaction_name,
+                               try_waiting):
         """
-        Method responsible for processing a read request from a read only transaction,
-        if the site holding the variable is down, it waits for the site to be up and then reads the variable.
+        Method responsible for processing a read request from a r
+        ead only transaction,
+        if the site holding the variable is down, it waits for the site to
+        be up and then reads the variable.
 
         Args:
-            params : list of parameters of the parsed instruction, containing instruction name
+            params : list of parameters of the parsed instruction, containing
+                     instruction name
 
         """
         if try_waiting:
@@ -276,7 +294,8 @@ class TransactionManager:
 
                     # print(len(blocked_tuple), variable)
 
-                    if len(blocked_tuple) == 4 and blocked_tuple[2] == variable:
+                    if len(blocked_tuple) == 4 and \
+                            blocked_tuple[2] == variable:
 
                         for lock in self.lock_table.lock_map[variable]:
 
@@ -291,15 +310,13 @@ class TransactionManager:
 
                             transaction.set_status(TransactionStatus.BLOCKED)
 
-                            # if transaction_name not in self.blocked_transactions:
-                            #     self.blocked_transactions[
-                            #         transaction_name] = []
-
                             self.blocked_transactions[self.current_time][
                                 transaction_name] = blocking_txn_tuple
 
-                            log.info(transaction_name + " will not get a read lock on " + variable +
-                                     " because " + key + " is already waiting for a write lock")
+                            log.info(transaction_name + " will not get a " +
+                                     "read lock on " + variable +
+                                     " because " + key +
+                                     " is already waiting for a write lock")
 
                             return
 
@@ -387,7 +404,8 @@ class TransactionManager:
 
     def detect_and_clear_deadlocks(self):
 
-        squashed_blocked_transactions = self.get_squashed_blocked_transactions()
+        squashed_blocked_transactions = \
+            self.get_squashed_blocked_transactions()
 
         for x in list(squashed_blocked_transactions):
 
@@ -416,7 +434,8 @@ class TransactionManager:
                 if block in visited:
                     return visited[block]
                 else:
-                    return self.detect_deadlock(block, visited, current, blocked_dict)
+                    return self.detect_deadlock(block, visited, current,
+                                                blocked_dict)
             return 0
 
         else:
@@ -454,11 +473,12 @@ class TransactionManager:
 
         to_pop = list()
 
-        squashed_blocked_transactions = self.get_squashed_blocked_transactions()
+        squashed_blocked_transactions = \
+            self.get_squashed_blocked_transactions()
 
         for blocked_dict_key in sorted(self.blocked_transactions.keys()):
-
-            for key, blocked_tuple in self.blocked_transactions[blocked_dict_key].items():
+            items = self.blocked_transactions[blocked_dict_key].items()
+            for key, blocked_tuple in items:
 
                 is_clear = True
 
@@ -466,7 +486,8 @@ class TransactionManager:
 
                 block = self.transaction_map[blocked_tuple[0]]
                 is_aborted = block.get_status() == TransactionStatus.ABORTED
-                is_committed = block.get_status() == TransactionStatus.COMMITTED
+                is_committed = block.get_status() == \
+                    TransactionStatus.COMMITTED
                 is_clear = is_clear & (is_aborted or is_committed)
 
                 if is_clear:
@@ -494,7 +515,8 @@ class TransactionManager:
 
     def abort(self, name):
 
-        squashed_blocked_transactions = self.get_squashed_blocked_transactions()
+        squashed_blocked_transactions = \
+            self.get_squashed_blocked_transactions()
 
         to_pop_blocked = list()
         to_pop_waiting = list()
@@ -610,7 +632,8 @@ class TransactionManager:
         log.info(params[0] + " committed")
         self.clear_locks(self.transaction_map[params[0]])
 
-        squashed_blocked_transactions = self.get_squashed_blocked_transactions()
+        squashed_blocked_transactions = \
+            self.get_squashed_blocked_transactions()
 
         to_pop_blocked = list()
         to_pop_waiting = list()
