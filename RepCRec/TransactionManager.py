@@ -411,11 +411,8 @@ class TransactionManager:
 
             visited = dict()
             current = []
-            index = self.detect_deadlock(
+            self.detect_deadlock(
                 x, visited, current, squashed_blocked_transactions)
-
-            if index != 0:
-                self.clear_deadlock(current, index - 1)
 
     def detect_deadlock(self, transaction, visited, current, blocked_dict):
 
@@ -432,19 +429,16 @@ class TransactionManager:
                         TransactionStatus.ABORTED:
                     continue
                 if block in visited:
-                    return visited[block]
+                    self.clear_deadlock(current, visited[block] - 1)
                 else:
-                    return self.detect_deadlock(block, visited, current,
-                                                blocked_dict)
-            return 0
+                    self.detect_deadlock(block, visited, current,
+                                         blocked_dict)
 
-        else:
-
-            return 0
+            current.pop()
+            visited.pop(transaction)
 
     def clear_deadlock(self, transaction_list, index):
         transaction_list = transaction_list[index:]
-
         max_id = -1
         max_name = None
 
@@ -489,7 +483,6 @@ class TransactionManager:
                 is_committed = block.get_status() == \
                     TransactionStatus.COMMITTED
                 is_clear = is_clear & (is_aborted or is_committed)
-
                 if is_clear:
 
                     to_delete = None
