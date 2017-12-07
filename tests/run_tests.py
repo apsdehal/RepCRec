@@ -66,6 +66,7 @@ def main(file_path="./output.txt"):
             print(colored(str(inp_file) + ": Success", "green"))
         else:
             print(colored(str(inp_file) + ": Failed", "red"))
+    os.remove(file_path)
 
 
 if __name__ == '__main__':
