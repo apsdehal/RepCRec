@@ -31,7 +31,6 @@ def main():
     d = difflib.Differ()
 
     for inp_file, out_file in zip(input_files, output_files):
-
         os.system('python -m RepCRec.start -o ' + INT_FILE + ' ' +
                   INPUT_FOLDER + str(inp_file))
 
@@ -46,9 +45,9 @@ def main():
             expected_output = test_file.readlines()
             for line1, line2 in zip(result, expected_output):
 
-                line1 = line1.split('-')[-1]
+                line1 = line1.split('-')[-1].strip()
                 actual_output.append(line1)
-                line2 = line2.split("-")[-1]
+                line2 = line2.split("-")[-1].strip()
                 stripped_expected_output.append(line2)
 
         diff = difflib.ndiff(actual_output, stripped_expected_output)
