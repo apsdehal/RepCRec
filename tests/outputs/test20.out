@@ -1,53 +1,56 @@
-INFO - 2017-12-06 14:03:10,787 - Site 1 failed
-INFO - 2017-12-06 14:03:10,788 - Site 2 failed
-INFO - 2017-12-06 14:03:10,788 - Site 4 failed
-INFO - 2017-12-06 14:03:10,788 - Site 6 failed
-INFO - 2017-12-06 14:03:10,788 - Site 8 failed
-INFO - 2017-12-06 14:03:10,788 - Site 10 failed
-INFO - 2017-12-06 14:03:10,788 - Starting read only transaction T1
-INFO - 2017-12-06 14:03:10,788 - Site 4 recovered
-INFO - 2017-12-06 14:03:10,788 - Site 6 recovered
-INFO - 2017-12-06 14:03:10,788 - T1 read the value 40 of variable x4
-INFO - 2017-12-06 14:03:10,788 - T1 committed
-INFO - 2017-12-06 14:03:10,788 - === Site 1 ===
-INFO - 2017-12-06 14:03:10,788 - All other variables have same initial value
-INFO - 2017-12-06 14:03:10,788 - === Site 2 ===
-INFO - 2017-12-06 14:03:10,789 - All other variables have same initial value
-INFO - 2017-12-06 14:03:10,790 - === Site 3 ===
-INFO - 2017-12-06 14:03:10,790 - All other variables have same initial value
-INFO - 2017-12-06 14:03:10,790 - === Site 4 ===
-INFO - 2017-12-06 14:03:10,790 - x2: is not available for reading
-INFO - 2017-12-06 14:03:10,790 - x3: 30 (available at site 4 for reading as it is the only copy or has been written after recovery)
-INFO - 2017-12-06 14:03:10,790 - x4: is not available for reading
-INFO - 2017-12-06 14:03:10,790 - x6: is not available for reading
-INFO - 2017-12-06 14:03:10,790 - x8: is not available for reading
-INFO - 2017-12-06 14:03:10,790 - x10: is not available for reading
-INFO - 2017-12-06 14:03:10,790 - x12: is not available for reading
-INFO - 2017-12-06 14:03:10,790 - x13: 130 (available at site 4 for reading as it is the only copy or has been written after recovery)
-INFO - 2017-12-06 14:03:10,790 - x14: is not available for reading
-INFO - 2017-12-06 14:03:10,790 - x16: is not available for reading
-INFO - 2017-12-06 14:03:10,790 - x18: is not available for reading
-INFO - 2017-12-06 14:03:10,790 - x20: is not available for reading
-INFO - 2017-12-06 14:03:10,790 - === Site 5 ===
-INFO - 2017-12-06 14:03:10,790 - All other variables have same initial value
-INFO - 2017-12-06 14:03:10,790 - === Site 6 ===
-INFO - 2017-12-06 14:03:10,790 - x2: is not available for reading
-INFO - 2017-12-06 14:03:10,790 - x4: is not available for reading
-INFO - 2017-12-06 14:03:10,790 - x5: 50 (available at site 6 for reading as it is the only copy or has been written after recovery)
-INFO - 2017-12-06 14:03:10,791 - x6: is not available for reading
-INFO - 2017-12-06 14:03:10,791 - x8: is not available for reading
-INFO - 2017-12-06 14:03:10,791 - x10: is not available for reading
-INFO - 2017-12-06 14:03:10,791 - x12: is not available for reading
-INFO - 2017-12-06 14:03:10,791 - x14: is not available for reading
-INFO - 2017-12-06 14:03:10,791 - x15: 150 (available at site 6 for reading as it is the only copy or has been written after recovery)
-INFO - 2017-12-06 14:03:10,791 - x16: is not available for reading
-INFO - 2017-12-06 14:03:10,791 - x18: is not available for reading
-INFO - 2017-12-06 14:03:10,791 - x20: is not available for reading
-INFO - 2017-12-06 14:03:10,791 - === Site 7 ===
-INFO - 2017-12-06 14:03:10,791 - All other variables have same initial value
-INFO - 2017-12-06 14:03:10,791 - === Site 8 ===
-INFO - 2017-12-06 14:03:10,791 - All other variables have same initial value
-INFO - 2017-12-06 14:03:10,791 - === Site 9 ===
-INFO - 2017-12-06 14:03:10,791 - All other variables have same initial value
-INFO - 2017-12-06 14:03:10,791 - === Site 10 ===
-INFO - 2017-12-06 14:03:10,791 - All other variables have same initial value
+INFO - 2017-12-06 19:52:46,947 - Site 1 failed
+INFO - 2017-12-06 19:52:46,947 - Site 2 failed
+INFO - 2017-12-06 19:52:46,947 - Site 4 failed
+INFO - 2017-12-06 19:52:46,947 - Site 6 failed
+INFO - 2017-12-06 19:52:46,947 - Site 8 failed
+INFO - 2017-12-06 19:52:46,947 - Site 10 failed
+INFO - 2017-12-06 19:52:46,947 - Starting read only transaction T1
+INFO - 2017-12-06 19:52:46,947 - T1 is waiting on x3
+INFO - 2017-12-06 19:52:46,947 - T1 is waiting on x5
+INFO - 2017-12-06 19:52:46,947 - Site 4 recovered
+INFO - 2017-12-06 19:52:46,947 - Site 6 recovered
+INFO - 2017-12-06 19:52:46,948 - T1 read the value 40 of variable x4
+INFO - 2017-12-06 19:52:46,948 - T1 read the value 50 of variable x5
+INFO - 2017-12-06 19:52:46,948 - T1 committed
+INFO - 2017-12-06 19:52:46,948 - === Site 1 ===
+INFO - 2017-12-06 19:52:46,948 - This site is down
+INFO - 2017-12-06 19:52:46,948 - === Site 2 ===
+INFO - 2017-12-06 19:52:46,948 - This site is down
+INFO - 2017-12-06 19:52:46,948 - === Site 3 ===
+INFO - 2017-12-06 19:52:46,948 - All other variables have same initial value
+INFO - 2017-12-06 19:52:46,948 - === Site 4 ===
+INFO - 2017-12-06 19:52:46,948 - x2: is not available for reading
+INFO - 2017-12-06 19:52:46,948 - x3: 30 (available at site 4 for reading as it is the only copy or has been written after recovery)
+INFO - 2017-12-06 19:52:46,948 - x4: is not available for reading
+INFO - 2017-12-06 19:52:46,948 - x6: is not available for reading
+INFO - 2017-12-06 19:52:46,948 - x8: is not available for reading
+INFO - 2017-12-06 19:52:46,948 - x10: is not available for reading
+INFO - 2017-12-06 19:52:46,948 - x12: is not available for reading
+INFO - 2017-12-06 19:52:46,948 - x13: 130 (available at site 4 for reading as it is the only copy or has been written after recovery)
+INFO - 2017-12-06 19:52:46,948 - x14: is not available for reading
+INFO - 2017-12-06 19:52:46,948 - x16: is not available for reading
+INFO - 2017-12-06 19:52:46,948 - x18: is not available for reading
+INFO - 2017-12-06 19:52:46,948 - x20: is not available for reading
+INFO - 2017-12-06 19:52:46,948 - === Site 5 ===
+INFO - 2017-12-06 19:52:46,948 - All other variables have same initial value
+INFO - 2017-12-06 19:52:46,949 - === Site 6 ===
+INFO - 2017-12-06 19:52:46,949 - x2: is not available for reading
+INFO - 2017-12-06 19:52:46,949 - x4: is not available for reading
+INFO - 2017-12-06 19:52:46,949 - x5: 50 (available at site 6 for reading as it is the only copy or has been written after recovery)
+INFO - 2017-12-06 19:52:46,949 - x6: is not available for reading
+INFO - 2017-12-06 19:52:46,949 - x8: is not available for reading
+INFO - 2017-12-06 19:52:46,949 - x10: is not available for reading
+INFO - 2017-12-06 19:52:46,949 - x12: is not available for reading
+INFO - 2017-12-06 19:52:46,949 - x14: is not available for reading
+INFO - 2017-12-06 19:52:46,949 - x15: 150 (available at site 6 for reading as it is the only copy or has been written after recovery)
+INFO - 2017-12-06 19:52:46,949 - x16: is not available for reading
+INFO - 2017-12-06 19:52:46,949 - x18: is not available for reading
+INFO - 2017-12-06 19:52:46,949 - x20: is not available for reading
+INFO - 2017-12-06 19:52:46,949 - === Site 7 ===
+INFO - 2017-12-06 19:52:46,949 - All other variables have same initial value
+INFO - 2017-12-06 19:52:46,949 - === Site 8 ===
+INFO - 2017-12-06 19:52:46,949 - This site is down
+INFO - 2017-12-06 19:52:46,949 - === Site 9 ===
+INFO - 2017-12-06 19:52:46,949 - All other variables have same initial value
+INFO - 2017-12-06 19:52:46,949 - === Site 10 ===
+INFO - 2017-12-06 19:52:46,949 - This site is down

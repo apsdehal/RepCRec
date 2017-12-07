@@ -75,7 +75,7 @@ class Site:
     def write_variable(self, transaction, variable, value):
 
         if self.status != SiteStatus.DOWN and \
-                self.status != SiteStatus.RECOVERING:
+                variable in self.recovered_variables:
 
             self.data_manager.write_variable(transaction,
                                              variable,
@@ -131,6 +131,10 @@ class Site:
     def dump_site(self):
 
         log.info("=== Site " + str(self.id) + " ===")
+
+        if self.status == SiteStatus.DOWN:
+            log.info("This site is down")
+            return
 
         count = 0
         for index in list(self.data_manager.variable_map):

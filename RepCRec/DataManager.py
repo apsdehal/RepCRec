@@ -66,15 +66,22 @@ class DataManager:
 
         if lock_type == LockType.WRITE and \
            not self.lock_table.is_locked(variable):
+
             self.lock_table.set_lock(transaction, lock_type, variable)
             return True
         elif lock_type == LockType.READ and \
                 not self.lock_table.is_write_locked(variable):
             self.lock_table.set_lock(transaction, lock_type, variable)
             return True
+
         else:
-            log.debug(transaction.name + " did not get write lock on " +
-                      variable + " site: " + str(self.site_id))
+
+            if lock_type == LockType.WRITE:
+                log.debug(transaction.name + " did not get write lock on " +
+                          variable + " site: " + str(self.site_id))
+            else:
+                log.debug(transaction.name + " did not get read lock on " +
+                          variable + " site: " + str(self.site_id))
             return False
 
     def write_variable(self, transaction, variable_name, value):

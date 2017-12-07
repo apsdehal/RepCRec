@@ -25,6 +25,38 @@ class SiteManager:
         self.sites = [None] + [Site(i) for i in range(1, num_sites + 1)]
         self.num_variables = num_variables
 
+    def tick(self, instruction):
+
+        params = list(instruction.get_params())
+
+        if instruction.get_instruction_type() == DUMP_FUNC:
+            if len(params[0]) == 0:
+                for site in self.sites[1:]:
+                    site.dump_site()
+
+            elif params[0][0] == 'x':
+                sites = Variable.get_sites(int(params[0][1:]))
+                sites = self.get_site_range(sites)
+
+                for site in sites:
+                    variables = self.sites[site].get_all_variables()
+
+                    for variable in variables:
+                        if variable.name == params[0]:
+                            log.info(variable.value)
+
+            elif len(params[0]) == 2:
+                site = self.get_site(int(params[0]))
+                site.dump_site()
+
+        elif instruction.get_instruction_type() == FAIL_FUNC:
+            self.fail(int(params[0]))
+
+        elif instruction.get_instruction_type() == RECOVER_FUNC:
+            self.recover(int(params[0]))
+
+        return
+
     def _check_index_sanity(self, index):
         if index > self.num_sites or index <= 0:
             raise ValueError("Index must be in range %d to %d" %
@@ -49,7 +81,7 @@ class SiteManager:
             if status == SiteStatus.DOWN:
                 continue
 
-            if status == SiteStatus.RECOVERING:
+            if status == SiteStatus.RECOVERING and typeof == LockType.READ:
 
                 if variable not in self.sites[site].recovered_variables:
                     continue
@@ -118,36 +150,10 @@ class SiteManager:
             if len(variable_values) == self.num_variables:
                 return variable_values
 
-        return variable_values
-
-    def tick(self, instruction):
-        params = list(instruction.get_params())
-
-        if instruction.get_instruction_type() == DUMP_FUNC:
-            if len(params[0]) == 0:
-                for site in self.sites[1:]:
-                    site.dump_site()
-
-            elif params[0][0] == 'x':
-                sites = Variable.get_sites(int(params[0][1:]))
-                sites = self.get_site_range(sites)
-
-                for site in sites:
-                    variables = self.sites[site].get_all_variables()
-
-                    for variable in variables:
-                        if variable.name == params[0]:
-                            log.info(variable.value)
-
-            elif len(params[0]) == 2:
-                site = self.get_site(int(params[0]))
-                site.dump_site()
-
-        elif instruction.get_instruction_type() == FAIL_FUNC:
-            self.fail(int(params[0]))
-
-        elif instruction.get_instruction_type() == RECOVER_FUNC:
-            self.recover(int(params[0]))
+        if var is None:
+            return variable_values
+        else:
+            return None
 
     def clear_locks(self, lock, variable_name):
 
