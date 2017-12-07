@@ -21,7 +21,7 @@ class Main:
         num_variables=("Number of variables", "option", "v", int),
         sites=("Whether to bring sites up", "flag", "s"),
         out_file=("Output file, if not passed by default we" +
-                  "will print to stdout", "option", "o", str),
+                  " will print to stdout", "option", "o", str),
         stdin=("Takes input from stdin instead of file if passed", "flag",
                "i"))
     def __init__(self, file_path,

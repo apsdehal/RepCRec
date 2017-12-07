@@ -2,4 +2,5 @@ __pycache__
 *.pyc
 config.py
 *.txt
+!requirements.txt
 !tests/outputs/*.txt

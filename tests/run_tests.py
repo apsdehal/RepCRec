@@ -1,12 +1,12 @@
 import subprocess
 import os
-import plac
 from os import path
 from termcolor import colored
 import difflib
 
 INPUT_FOLDER = 'tests/inputs/'
 OUTPUT_FOLDER = 'tests/outputs/'
+INT_FILE = 'output'
 
 
 def color_diff(diff):
@@ -21,10 +21,7 @@ def color_diff(diff):
             yield line
 
 
-@plac.annotations(
-    file_path=("Intermediatery save file name",
-               "positional", None, str))
-def main(file_path="./output.txt"):
+def main():
     input_files = os.listdir(INPUT_FOLDER)
     output_files = os.listdir(OUTPUT_FOLDER)
 
@@ -35,14 +32,14 @@ def main(file_path="./output.txt"):
 
     for inp_file, out_file in zip(input_files, output_files):
 
-        os.system('python -m RepCRec.start -o ' + file_path + ' ' +
+        os.system('python -m RepCRec.start -o ' + INT_FILE + ' ' +
                   INPUT_FOLDER + str(inp_file))
 
         actual_output = []
         expected_output = str()
         stripped_expected_output = []
 
-        with open(file_path, 'r') as outfile, \
+        with open(INT_FILE, 'r') as outfile, \
                 open(OUTPUT_FOLDER + str(out_file), 'r') as test_file:
 
             result = outfile.readlines()
@@ -66,8 +63,8 @@ def main(file_path="./output.txt"):
             print(colored(str(inp_file) + ": Success", "green"))
         else:
             print(colored(str(inp_file) + ": Failed", "red"))
-    os.remove(file_path)
+    os.remove(INT_FILE)
 
 
 if __name__ == '__main__':
-    plac.call(main)
+    main()
