@@ -18,7 +18,7 @@ class Site:
     def __init__(self, index):
         self.id = index
 
-        # Variables will be shifted to DataManager
+        # Variables are mainly in DataManager, here only for convenience
         self.variables = []
         self.status = SiteStatus.UP
         self.last_failure_time = None
@@ -79,17 +79,18 @@ class Site:
         # TODO: Actually kill the server instead of sending 500
         # See https://gist.github.com/mywaiting/4643396 mainly server.stop
         # and ioloop.kill for this instance
+
         application = web.Application([
             (r"/", SiteHandler,
-             dict(variables=self.variables,
-                  id=self.id,
+             dict(variables=self.data_manager.variable_map,
+                  index=self.id,
                   status=self.get_status()))
         ])
         http_server = httpserver.HTTPServer(application)
         http_server.add_sockets(netutil.bind_sockets(
-                                self.BASE_PORT + self.id))
+            self.BASE_PORT + 20 * self.id))
         log.debug("Site %d listening on %d" %
-                  (self.id, self.BASE_PORT + self.id))
+                  (self.id, self.BASE_PORT + 20 * self.id))
 
         self.set_status(SiteStatus.UP)
 

@@ -160,7 +160,6 @@ class SiteManager:
     def start(self):
         for site in self.sites[1:]:
             site.listen()
-        IOLoop.current().start()
 
     def fail(self, index):
         self._check_index_sanity(index)

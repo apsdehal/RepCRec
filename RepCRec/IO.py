@@ -7,17 +7,22 @@ from .constants import SITE_MANAGER_FUNCS
 class IO:
 
     def __init__(self, file_name, site_manager, transaction_manager,
-                 lock_table):
+                 lock_table, stdin=False):
         # print("Hello")
 
         self.file_name = file_name
-        self.line_generator = self._get_line_generator()
+        self.stdin = stdin
+        if not self.stdin:
+            self.line_generator = self._get_line_generator()
         self.site_manager = site_manager
         self.transaction_manager = transaction_manager
         self.lock_table = lock_table
 
     def get_next_instruction(self):
-        line = next(self.line_generator, None)
+        if not self.stdin:
+            line = next(self.line_generator, None)
+        else:
+            line = input().strip()
         # print(line)
 
         if line is None:
