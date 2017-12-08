@@ -218,8 +218,8 @@ class TransactionManager:
     def read_request_read_only(self, transaction, variable, transaction_name,
                                try_waiting):
         """
-        Method responsible for processing a read request from a read only 
-        transaction, if the site holding the variable is down, 
+        Method responsible for processing a read request from a read only
+        transaction, if the site holding the variable is down,
         it waits for the site to be up and then reads the variable.
 
         Args:
@@ -301,10 +301,10 @@ class TransactionManager:
                 transaction.set_status(TransactionStatus.RUNNING)
                 return
 
-            for blocked_tuple_dict in self.blocked_transactions.values():
-
-                for key, blocked_tuple in blocked_tuple_dict.items():
-
+            for time in list(self.blocked_transactions):
+                blocked_tuple_dict = self.blocked_transactions[time]
+                for key in list(blocked_tuple_dict):
+                    blocked_tuple = blocked_tuple_dict[key]
                     # print(len(blocked_tuple), variable)
 
                     if len(blocked_tuple) == 4 and \
@@ -359,8 +359,10 @@ class TransactionManager:
                 if variable not in transaction.read_variables:
                     transaction.read_variables[variable] = list()
 
+                curr_variable = self.site_manager.get_current_variables(
+                    variable)
                 transaction.read_variables[
-                    variable].append(self.site_manager.get_current_variables(variable))
+                    variable].append(curr_variable)
 
                 self.lock_table.set_lock(transaction,
                                          LockType.READ, variable)
@@ -420,8 +422,8 @@ class TransactionManager:
 
         to_pop = list()
 
-        for trn_name, transaction in self.transaction_map.items():
-
+        for trn_name in list(self.transaction_map):
+            transaction = self.transaction_map[trn_name]
             if transaction.get_status() == TransactionStatus.ABORTED:
 
                 to_pop.append(trn_name)
@@ -440,8 +442,12 @@ class TransactionManager:
                 x, visited, current, squashed_blocked_transactions)
 
     def detect_deadlock(self, transaction, visited, current, blocked_dict):
+        is_aborted = self.transaction_map[transaction].get_status() \
+            == TransactionStatus.ABORTED
+        is_committed = self.transaction_map[transaction].get_status() \
+            == TransactionStatus.COMMITTED
 
-        if transaction in blocked_dict:
+        if transaction in blocked_dict and not is_aborted and not is_committed:
 
             visited[transaction] = len(current) + 1
             current.append(transaction)
@@ -469,7 +475,15 @@ class TransactionManager:
         max_name = None
 
         for name in transaction_list:
-            if max_id < self.transaction_map[name].id:
+            transaction = self.transaction_map[name]
+            is_committed = transaction.get_status() == \
+                TransactionStatus.ABORTED
+            is_aborted = transaction.get_status() == \
+                TransactionStatus.COMMITTED
+            if is_committed or is_aborted:
+                return
+
+            if max_id < transaction.id:
                 max_id = self.transaction_map[name].id
                 max_name = name
 
@@ -477,13 +491,12 @@ class TransactionManager:
         self.abort(max_name)
 
     def get_squashed_blocked_transactions(self):
-
         squashed_blocked_transactions = defaultdict(list)
 
         for blocked_dicts in self.blocked_transactions.values():
 
-            for transaction_name, blocked_tuple in blocked_dicts.items():
-
+            for transaction_name in list(blocked_dicts):
+                blocked_tuple = blocked_dicts[transaction_name]
                 squashed_blocked_transactions[
                     transaction_name].append(blocked_tuple)
 
@@ -498,10 +511,11 @@ class TransactionManager:
 
         for blocked_dict_key in sorted(self.blocked_transactions.keys()):
 
-            items = self.blocked_transactions[blocked_dict_key].items()
+            items = list(self.blocked_transactions[blocked_dict_key])
 
-            for key, blocked_tuple in items:
-
+            for key in items:
+                blocked_tuple = self.blocked_transactions[
+                    blocked_dict_key][key]
                 is_clear = True
 
                 # for blocking_transaction in block:
@@ -536,26 +550,18 @@ class TransactionManager:
 
     def abort(self, name):
 
-        squashed_blocked_transactions = \
-            self.get_squashed_blocked_transactions()
-
         to_pop_blocked = list()
         to_pop_waiting = list()
 
-        if name in squashed_blocked_transactions:
+        for time in sorted(self.blocked_transactions.keys()):
 
-            squashed_blocked_transactions.pop(name)
-            # self.blocked_transactions.pop(name)
+            if name in self.blocked_transactions[time]:
 
-            for blocked_dict_key in sorted(self.blocked_transactions.keys()):
+                to_pop_blocked.append((time, name))
+                # self.blocked_transactions[blocked_dict_key].pop(name)
 
-                if name in self.blocked_transactions[blocked_dict_key]:
-
-                    to_pop_blocked.append((blocked_dict_key, name))
-                    # self.blocked_transactions[blocked_dict_key].pop(name)
-
-            for key in to_pop_blocked:
-                self.blocked_transactions[key[0]].pop(key[1])
+        for key in to_pop_blocked:
+            self.blocked_transactions[key[0]].pop(key[1])
         # if name in self.waiting_transactions:
         #     self.waiting_transactions.pop(name)
 
@@ -588,9 +594,10 @@ class TransactionManager:
 
         to_pop = list()
 
-        for time, waiting_dicts in self.waiting_transactions.items():
+        for time in list(self.waiting_transactions):
+            waiting_dicts = self.waiting_transactions[time]
 
-            for transaction in waiting_dicts.keys():
+            for transaction in list(waiting_dicts):
 
                 params = waiting_dicts[transaction]
                 transaction_obj = self.transaction_map[transaction]
