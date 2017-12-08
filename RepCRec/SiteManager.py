@@ -9,6 +9,7 @@ from tornado.ioloop import IOLoop
 
 from .Site import Site
 from .Variable import Variable
+from .LockTable import LockTable
 from .enums.LockType import LockType
 from .enums.SiteStatus import SiteStatus
 from .enums.LockAcquireStatus import LockAcquireStatus
@@ -154,6 +155,24 @@ class SiteManager:
             return variable_values
         else:
             return None
+
+    def get_set_locks(self):
+        locks = dict()
+
+        for site in self.sites[1:]:
+            lock_map = site.data_manager.lock_table.lock_map
+
+            for var, curr_locks in lock_map.items():
+                if var not in locks:
+                    locks[var] = []
+
+                for lock in curr_locks:
+                    if lock not in locks[var]:
+                        locks[var].append(lock)
+        lock_table = LockTable()
+        lock_table.lock_map = locks
+        return lock_table
+        # return locks
 
     def clear_locks(self, lock, variable_name):
 
