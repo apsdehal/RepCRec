@@ -1,0 +1,37 @@
+INFO - 2017-12-07 21:01:23,856 - Starting T1
+INFO - 2017-12-07 21:01:23,856 - T1 got write lock on x2
+INFO - 2017-12-07 21:01:23,857 - T1 already has a read lock on x2
+INFO - 2017-12-07 21:01:23,857 - T1 already has a write lock on x2
+INFO - 2017-12-07 21:01:23,857 - T1 already has a read lock on x2
+INFO - 2017-12-07 21:01:23,857 - T1 committed
+INFO - 2017-12-07 21:01:23,857 - Clearing locks for T1 variable: x2
+INFO - 2017-12-07 21:01:23,857 - === Site 1 ===
+INFO - 2017-12-07 21:01:23,857 - x2:  202 at site 1
+INFO - 2017-12-07 21:01:23,857 - All other variables have same initial value
+INFO - 2017-12-07 21:01:23,857 - === Site 2 ===
+INFO - 2017-12-07 21:01:23,857 - x2:  202 at site 2
+INFO - 2017-12-07 21:01:23,857 - All other variables have same initial value
+INFO - 2017-12-07 21:01:23,857 - === Site 3 ===
+INFO - 2017-12-07 21:01:23,857 - x2:  202 at site 3
+INFO - 2017-12-07 21:01:23,857 - All other variables have same initial value
+INFO - 2017-12-07 21:01:23,857 - === Site 4 ===
+INFO - 2017-12-07 21:01:23,858 - x2:  202 at site 4
+INFO - 2017-12-07 21:01:23,858 - All other variables have same initial value
+INFO - 2017-12-07 21:01:23,858 - === Site 5 ===
+INFO - 2017-12-07 21:01:23,858 - x2:  202 at site 5
+INFO - 2017-12-07 21:01:23,858 - All other variables have same initial value
+INFO - 2017-12-07 21:01:23,858 - === Site 6 ===
+INFO - 2017-12-07 21:01:23,858 - x2:  202 at site 6
+INFO - 2017-12-07 21:01:23,858 - All other variables have same initial value
+INFO - 2017-12-07 21:01:23,858 - === Site 7 ===
+INFO - 2017-12-07 21:01:23,858 - x2:  202 at site 7
+INFO - 2017-12-07 21:01:23,858 - All other variables have same initial value
+INFO - 2017-12-07 21:01:23,858 - === Site 8 ===
+INFO - 2017-12-07 21:01:23,858 - x2:  202 at site 8
+INFO - 2017-12-07 21:01:23,858 - All other variables have same initial value
+INFO - 2017-12-07 21:01:23,858 - === Site 9 ===
+INFO - 2017-12-07 21:01:23,858 - x2:  202 at site 9
+INFO - 2017-12-07 21:01:23,858 - All other variables have same initial value
+INFO - 2017-12-07 21:01:23,858 - === Site 10 ===
+INFO - 2017-12-07 21:01:23,858 - x2:  202 at site 10
+INFO - 2017-12-07 21:01:23,858 - All other variables have same initial value
