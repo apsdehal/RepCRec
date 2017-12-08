@@ -85,6 +85,7 @@ class TransactionManager:
             self.write_request(params)
 
         elif instruction.get_instruction_type() == END_FUNC:
+            # print(params[0])
             self.end(params)
         else:
             log.info("We have a problem")
@@ -217,10 +218,9 @@ class TransactionManager:
     def read_request_read_only(self, transaction, variable, transaction_name,
                                try_waiting):
         """
-        Method responsible for processing a read request from a r
-        ead only transaction,
-        if the site holding the variable is down, it waits for the site to
-        be up and then reads the variable.
+        Method responsible for processing a read request from a read only 
+        transaction, if the site holding the variable is down, 
+        it waits for the site to be up and then reads the variable.
 
         Args:
             params : list of parameters of the parsed instruction, containing
@@ -256,6 +256,19 @@ class TransactionManager:
         return
 
     def read_request(self, params, try_waiting=False):
+        """
+        Method responsible for processing a read request, gets read locks on
+        the variable to be written,
+        in case it is not able to get locks, changes status to blocked or
+        waiting according to situation.
+        Also inserts transactions in waiting or blocked transaction dicts
+        as required.
+
+        Args:
+            params : list of parameters of the parsed instruction, containing
+                     instruction name
+
+        """
 
         transaction_name = params[0]
         variable = params[1]
@@ -347,8 +360,7 @@ class TransactionManager:
                     transaction.read_variables[variable] = list()
 
                 transaction.read_variables[
-                    variable] = \
-                    self.site_manager.get_current_variables(variable)
+                    variable].append(self.site_manager.get_current_variables(variable))
 
                 self.lock_table.set_lock(transaction,
                                          LockType.READ, variable)
@@ -392,6 +404,19 @@ class TransactionManager:
         return
 
     def clear_aborted(self):
+        """
+        Method responsible for processing a write request, gets write locks on
+        the variable to be written,
+        in case it is not able to get locks, changes status to blocked or
+        waiting according to situation.
+        Also inserts transactions in waiting or blocked transaction dicts
+        as required.
+
+        Args:
+            params : list of parameters of the parsed instruction, containing
+                     instruction name
+
+        """
 
         to_pop = list()
 
@@ -428,6 +453,7 @@ class TransactionManager:
                 if self.transaction_map[block].get_status() == \
                         TransactionStatus.ABORTED:
                     continue
+
                 if block in visited:
                     self.clear_deadlock(current, visited[block] - 1)
                 else:
@@ -471,7 +497,9 @@ class TransactionManager:
             self.get_squashed_blocked_transactions()
 
         for blocked_dict_key in sorted(self.blocked_transactions.keys()):
+
             items = self.blocked_transactions[blocked_dict_key].items()
+
             for key, blocked_tuple in items:
 
                 is_clear = True
@@ -617,11 +645,13 @@ class TransactionManager:
     def end(self, params):
 
         status = self.transaction_map[params[0]].get_status()
+
         if status == TransactionStatus.COMMITTED or \
                 status == TransactionStatus.ABORTED:
             return
 
         self.commit_transaction(params[0])
+        # print("Got here")
         log.info(params[0] + " committed")
         self.clear_locks(self.transaction_map[params[0]])
 

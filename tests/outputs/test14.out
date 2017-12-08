@@ -1,45 +1,46 @@
-INFO - 2017-12-06 13:57:17,904 - Starting T1
-INFO - 2017-12-06 13:57:17,904 - Starting T2
-INFO - 2017-12-06 13:57:17,905 - Starting T3
-INFO - 2017-12-06 13:57:17,905 - T3 got write lock on x2
-DEBUG - 2017-12-06 13:57:17,905 - T1 did not get write lock on x2 site: 1
-DEBUG - 2017-12-06 13:57:17,905 - T1 did not get write lock on x2 site: 2
-DEBUG - 2017-12-06 13:57:17,905 - T1 did not get write lock on x2 site: 3
-DEBUG - 2017-12-06 13:57:17,905 - T1 did not get write lock on x2 site: 4
-DEBUG - 2017-12-06 13:57:17,905 - T1 did not get write lock on x2 site: 5
-DEBUG - 2017-12-06 13:57:17,905 - T1 did not get write lock on x2 site: 6
-DEBUG - 2017-12-06 13:57:17,905 - T1 did not get write lock on x2 site: 7
-DEBUG - 2017-12-06 13:57:17,905 - T1 did not get write lock on x2 site: 8
-DEBUG - 2017-12-06 13:57:17,906 - T1 did not get write lock on x2 site: 9
-DEBUG - 2017-12-06 13:57:17,906 - T1 did not get write lock on x2 site: 10
-INFO - 2017-12-06 13:57:17,906 - T1 is blocked by T3 on x2
-DEBUG - 2017-12-06 13:57:17,906 - T2 did not get write lock on x2 site: 1
-DEBUG - 2017-12-06 13:57:17,907 - T2 did not get write lock on x2 site: 2
-DEBUG - 2017-12-06 13:57:17,907 - T2 did not get write lock on x2 site: 3
-DEBUG - 2017-12-06 13:57:17,907 - T2 did not get write lock on x2 site: 4
-DEBUG - 2017-12-06 13:57:17,907 - T2 did not get write lock on x2 site: 5
-DEBUG - 2017-12-06 13:57:17,907 - T2 did not get write lock on x2 site: 6
-DEBUG - 2017-12-06 13:57:17,907 - T2 did not get write lock on x2 site: 7
-DEBUG - 2017-12-06 13:57:17,907 - T2 did not get write lock on x2 site: 8
-DEBUG - 2017-12-06 13:57:17,907 - T2 did not get write lock on x2 site: 9
-DEBUG - 2017-12-06 13:57:17,907 - T2 did not get write lock on x2 site: 10
-INFO - 2017-12-06 13:57:17,907 - T2 is blocked by T3 on x2
-INFO - 2017-12-06 13:57:17,907 - T3 committed
-INFO - 2017-12-06 13:57:17,907 - Clearing locks for T3 variable: x2
-INFO - 2017-12-06 13:57:17,907 - T1 got write lock on x2
-DEBUG - 2017-12-06 13:57:17,907 - T2 did not get write lock on x2 site: 1
-DEBUG - 2017-12-06 13:57:17,907 - T2 did not get write lock on x2 site: 2
-DEBUG - 2017-12-06 13:57:17,907 - T2 did not get write lock on x2 site: 3
-DEBUG - 2017-12-06 13:57:17,908 - T2 did not get write lock on x2 site: 4
-DEBUG - 2017-12-06 13:57:17,908 - T2 did not get write lock on x2 site: 5
-DEBUG - 2017-12-06 13:57:17,908 - T2 did not get write lock on x2 site: 6
-DEBUG - 2017-12-06 13:57:17,908 - T2 did not get write lock on x2 site: 7
-DEBUG - 2017-12-06 13:57:17,908 - T2 did not get write lock on x2 site: 8
-DEBUG - 2017-12-06 13:57:17,908 - T2 did not get write lock on x2 site: 9
-DEBUG - 2017-12-06 13:57:17,908 - T2 did not get write lock on x2 site: 10
-INFO - 2017-12-06 13:57:17,908 - T2 is blocked by T1 on x2
-INFO - 2017-12-06 13:57:17,908 - T1 committed
-INFO - 2017-12-06 13:57:17,908 - Clearing locks for T1 variable: x2
-INFO - 2017-12-06 13:57:17,908 - T2 got write lock on x2
-INFO - 2017-12-06 13:57:17,908 - T2 committed
-INFO - 2017-12-06 13:57:17,908 - Clearing locks for T2 variable: x2
+INFO - 2017-12-07 19:28:39,673 - Starting T1
+INFO - 2017-12-07 19:28:39,674 - Starting T2
+INFO - 2017-12-07 19:28:39,674 - Starting T3
+INFO - 2017-12-07 19:28:39,674 - T3 got write lock on x2
+INFO - 2017-12-07 19:28:39,674 - T1 is blocked for a write lock by T3 on x2
+INFO - 2017-12-07 19:28:39,674 - T2 is blocked for a write lock by T3 on x2
+INFO - 2017-12-07 19:28:39,674 - T3 committed
+INFO - 2017-12-07 19:28:39,674 - Clearing locks for T3 variable: x2
+INFO - 2017-12-07 19:28:39,674 - T1 got write lock on x2
+INFO - 2017-12-07 19:28:39,674 - T2 is blocked for a write lock by T1 on x2
+INFO - 2017-12-07 19:28:39,675 - T1 committed
+INFO - 2017-12-07 19:28:39,675 - Clearing locks for T1 variable: x2
+INFO - 2017-12-07 19:28:39,675 - T2 got write lock on x2
+INFO - 2017-12-07 19:28:39,675 - T2 already has a write lock on x2
+INFO - 2017-12-07 19:28:39,675 - T2 committed
+INFO - 2017-12-07 19:28:39,675 - Clearing locks for T2 variable: x2
+INFO - 2017-12-07 19:28:39,675 - === Site 1 ===
+INFO - 2017-12-07 19:28:39,675 - x2:  10 at site 1
+INFO - 2017-12-07 19:28:39,675 - All other variables have same initial value
+INFO - 2017-12-07 19:28:39,675 - === Site 2 ===
+INFO - 2017-12-07 19:28:39,675 - x2:  10 at site 2
+INFO - 2017-12-07 19:28:39,675 - All other variables have same initial value
+INFO - 2017-12-07 19:28:39,675 - === Site 3 ===
+INFO - 2017-12-07 19:28:39,675 - x2:  10 at site 3
+INFO - 2017-12-07 19:28:39,675 - All other variables have same initial value
+INFO - 2017-12-07 19:28:39,675 - === Site 4 ===
+INFO - 2017-12-07 19:28:39,675 - x2:  10 at site 4
+INFO - 2017-12-07 19:28:39,675 - All other variables have same initial value
+INFO - 2017-12-07 19:28:39,675 - === Site 5 ===
+INFO - 2017-12-07 19:28:39,676 - x2:  10 at site 5
+INFO - 2017-12-07 19:28:39,676 - All other variables have same initial value
+INFO - 2017-12-07 19:28:39,676 - === Site 6 ===
+INFO - 2017-12-07 19:28:39,676 - x2:  10 at site 6
+INFO - 2017-12-07 19:28:39,676 - All other variables have same initial value
+INFO - 2017-12-07 19:28:39,676 - === Site 7 ===
+INFO - 2017-12-07 19:28:39,676 - x2:  10 at site 7
+INFO - 2017-12-07 19:28:39,676 - All other variables have same initial value
+INFO - 2017-12-07 19:28:39,676 - === Site 8 ===
+INFO - 2017-12-07 19:28:39,676 - x2:  10 at site 8
+INFO - 2017-12-07 19:28:39,676 - All other variables have same initial value
+INFO - 2017-12-07 19:28:39,676 - === Site 9 ===
+INFO - 2017-12-07 19:28:39,676 - x2:  10 at site 9
+INFO - 2017-12-07 19:28:39,676 - All other variables have same initial value
+INFO - 2017-12-07 19:28:39,676 - === Site 10 ===
+INFO - 2017-12-07 19:28:39,676 - x2:  10 at site 10
+INFO - 2017-12-07 19:28:39,676 - All other variables have same initial value
