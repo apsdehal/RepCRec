@@ -57,6 +57,12 @@ class Main:
         self.sites = sites
 
     @gen.coroutine
+    def run_coroutine(self):
+        if self.sites:
+            self.site_manager.start()
+
+        self.io.run()
+
     def run(self):
         if self.sites:
             self.site_manager.start()
@@ -68,7 +74,7 @@ if __name__ == "__main__":
     main = plac.call(Main)
 
     if main.sites:
-        IOLoop.instance().add_callback(main.run)
+        IOLoop.instance().add_callback(main.run_coroutine)
         IOLoop.current().start()
     else:
         main.run()
