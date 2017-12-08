@@ -116,7 +116,7 @@ class Site:
                          str(self.id) + " failed")
                 lock.transaction.set_status(TransactionStatus.ABORTED)
 
-        self.data_manager.lock_table.lock_map = dict()
+        # self.data_manager.lock_table.lock_map = dict()
 
     def recover(self):
         # This would make sense once we actually kill the server

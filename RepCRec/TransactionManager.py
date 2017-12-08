@@ -162,6 +162,7 @@ class TransactionManager:
         if self.lock_table.is_locked_by_transaction(transaction, variable,
                                                     LockType.WRITE):
 
+            self.lock_table.set_lock(transaction, LockType.WRITE, variable)
             log.info(transaction.name +
                      " already has a write lock on " + variable)
             transaction.uncommitted_variables[variable] = value
@@ -220,7 +221,7 @@ class TransactionManager:
 
         else:
 
-            for lock in self.lock_table.lock_map[variable]:
+            for lock in self.site_manager.get_set_locks().lock_map[variable]:
 
                 blocking_transaction = lock.transaction.name
 
@@ -267,7 +268,7 @@ class TransactionManager:
 
             val = self.site_manager.get_current_variables(variable)
 
-            if val != None:
+            if val is None:
 
                 transaction.variable_values[variable] = val
             else:
@@ -351,7 +352,7 @@ class TransactionManager:
                     self.lock_table.is_locked_by_transaction(transaction,
                                                              variable,
                                                              LockType.WRITE):
-
+                self.lock_table.set_lock(transaction, LockType.READ, variable)
                 log.info(transaction.name +
                          " already has a read lock on " + variable)
                 transaction.set_status(TransactionStatus.RUNNING)
@@ -457,7 +458,7 @@ class TransactionManager:
 
             else:
 
-                for lock in self.lock_table.lock_map[variable]:
+                for lock in self.site_manager.get_set_locks().lock_map[variable]:
 
                     blocking_transaction = lock.transaction.name
 
@@ -620,8 +621,8 @@ class TransactionManager:
 
     def get_squashed_waiting_transactions(self):
         """
-        Method responsible for resolving deadlock after 
-        it has been detected by aborting 
+        Method responsible for resolving deadlock after
+        it has been detected by aborting
         the youngest transaction involved.
 
         Args:
@@ -721,15 +722,19 @@ class TransactionManager:
         return
 
     def clear_locks(self, transaction):
-        for var_name in list(self.lock_table.get_lock_map()):
-            locks = self.lock_table.get_lock_map()[var_name]
+        lock_map = self.site_manager.get_set_locks().get_lock_map()
+
+        for var_name in sorted(list(lock_map)):
+            locks = lock_map[var_name]
             for lock in locks:
                 if lock.transaction == transaction:
-
-                    log.info("Clearing locks for " + transaction.name +
-                             " variable: " + var_name)
                     self.site_manager.clear_locks(lock, var_name)
-                    self.lock_table.clear_lock(lock, var_name)
+                    log.debug("Clearing site locks for " + transaction.name +
+                              " variable: " + var_name)
+
+                    if self.lock_table.clear_lock(lock, var_name):
+                        log.info("Clearing locks for " + transaction.name +
+                                 " variable: " + var_name)
 
     def try_waiting(self):
 

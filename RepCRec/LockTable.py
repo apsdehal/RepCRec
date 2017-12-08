@@ -27,6 +27,10 @@ class LockTable:
 
         if variable not in self.lock_map:
             self.lock_map[variable] = []
+
+        for org in self.lock_map[variable]:
+            if org == lock:
+                return
         self.lock_map[variable].append(lock)
 
     def is_locked(self, variable):
@@ -61,18 +65,17 @@ class LockTable:
         self.lock_map.pop(variable)
 
     def clear_lock(self, lock, variable):
-
         if variable in self.lock_map.keys():
             try:
                 index = self.lock_map[variable].index(lock)
-
                 self.lock_map[variable] = self.lock_map[variable][
                     :index] + self.lock_map[variable][index + 1:]
-
                 if len(self.lock_map[variable]) == 0:
                     self.lock_map.pop(variable)
+                return True
             except ValueError:
                 pass
+        return False
 
     """
     Return 0 if not present or if present and lock type doesn't match

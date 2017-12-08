@@ -57,9 +57,10 @@ class DataManager:
         is_locked_by_txn = self.lock_table.is_locked_by_transaction(
             transaction,
             variable)
-
         if is_locked_by_txn:
             if self.lock_table.get_len_locks(variable) == 1:
+                self.lock_table.set_lock(transaction,
+                                         lock_type, variable)
                 return True
             else:
                 return False
