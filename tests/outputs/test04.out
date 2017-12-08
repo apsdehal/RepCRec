@@ -1,53 +1,53 @@
-INFO - 2017-12-06 14:15:07,453 - Starting T1
-INFO - 2017-12-06 14:15:07,454 - Starting T2
-INFO - 2017-12-06 14:15:07,454 - T1 got read lock on x1 having value 10
-INFO - 2017-12-06 14:15:07,454 - Site 2 failed
-INFO - 2017-12-06 14:15:07,454 - T1 aborted as site 2 failed
-INFO - 2017-12-06 14:15:07,454 - Clearing locks for T1 variable: x1
-INFO - 2017-12-06 14:15:07,454 - T2 got write lock on x8
-INFO - 2017-12-06 14:15:07,454 - T2 got read lock on x3 having value 30
-INFO - 2017-12-06 14:15:07,454 - T2 read the value 30 of variable x3
-INFO - 2017-12-06 14:15:07,454 - T2 committed
-INFO - 2017-12-06 14:15:07,454 - Clearing locks for T2 variable: x8
-INFO - 2017-12-06 14:15:07,454 - Clearing locks for T2 variable: x3
-INFO - 2017-12-06 14:15:07,454 - Site 2 recovered
-INFO - 2017-12-06 14:15:07,454 - === Site 1 ===
-INFO - 2017-12-06 14:15:07,454 - x8:  88 at site 1
-INFO - 2017-12-06 14:15:07,455 - All other variables have same initial value
-INFO - 2017-12-06 14:15:07,455 - === Site 2 ===
-INFO - 2017-12-06 14:15:07,455 - x1: 10 (available at site 2 for reading as it is the only copy or has been written after recovery)
-INFO - 2017-12-06 14:15:07,455 - x2: is not available for reading
-INFO - 2017-12-06 14:15:07,455 - x4: is not available for reading
-INFO - 2017-12-06 14:15:07,455 - x6: is not available for reading
-INFO - 2017-12-06 14:15:07,455 - x8: is not available for reading
-INFO - 2017-12-06 14:15:07,455 - x10: is not available for reading
-INFO - 2017-12-06 14:15:07,455 - x11: 110 (available at site 2 for reading as it is the only copy or has been written after recovery)
-INFO - 2017-12-06 14:15:07,455 - x12: is not available for reading
-INFO - 2017-12-06 14:15:07,455 - x14: is not available for reading
-INFO - 2017-12-06 14:15:07,455 - x16: is not available for reading
-INFO - 2017-12-06 14:15:07,455 - x18: is not available for reading
-INFO - 2017-12-06 14:15:07,455 - x20: is not available for reading
-INFO - 2017-12-06 14:15:07,455 - === Site 3 ===
-INFO - 2017-12-06 14:15:07,455 - x8:  88 at site 3
-INFO - 2017-12-06 14:15:07,455 - All other variables have same initial value
-INFO - 2017-12-06 14:15:07,455 - === Site 4 ===
-INFO - 2017-12-06 14:15:07,455 - x8:  88 at site 4
-INFO - 2017-12-06 14:15:07,455 - All other variables have same initial value
-INFO - 2017-12-06 14:15:07,455 - === Site 5 ===
-INFO - 2017-12-06 14:15:07,455 - x8:  88 at site 5
-INFO - 2017-12-06 14:15:07,455 - All other variables have same initial value
-INFO - 2017-12-06 14:15:07,455 - === Site 6 ===
-INFO - 2017-12-06 14:15:07,455 - x8:  88 at site 6
-INFO - 2017-12-06 14:15:07,456 - All other variables have same initial value
-INFO - 2017-12-06 14:15:07,456 - === Site 7 ===
-INFO - 2017-12-06 14:15:07,456 - x8:  88 at site 7
-INFO - 2017-12-06 14:15:07,456 - All other variables have same initial value
-INFO - 2017-12-06 14:15:07,456 - === Site 8 ===
-INFO - 2017-12-06 14:15:07,456 - x8:  88 at site 8
-INFO - 2017-12-06 14:15:07,456 - All other variables have same initial value
-INFO - 2017-12-06 14:15:07,456 - === Site 9 ===
-INFO - 2017-12-06 14:15:07,456 - x8:  88 at site 9
-INFO - 2017-12-06 14:15:07,456 - All other variables have same initial value
-INFO - 2017-12-06 14:15:07,456 - === Site 10 ===
-INFO - 2017-12-06 14:15:07,456 - x8:  88 at site 10
-INFO - 2017-12-06 14:15:07,456 - All other variables have same initial value
+INFO - 2017-12-08 18:01:48,042 - Starting T1
+INFO - 2017-12-08 18:01:48,043 - Starting T2
+INFO - 2017-12-08 18:01:48,043 - T1 got read lock on x1 having value 10
+INFO - 2017-12-08 18:01:48,043 - Site 2 failed
+INFO - 2017-12-08 18:01:48,043 - T1 aborted as site 2 failed
+INFO - 2017-12-08 18:01:48,043 - Clearing locks for T1 variable: x1
+INFO - 2017-12-08 18:01:48,043 - T2 got write lock on x8
+INFO - 2017-12-08 18:01:48,043 - T2 got read lock on x3 having value 30
+INFO - 2017-12-08 18:01:48,044 - T2 read the value 30 of variable x3
+INFO - 2017-12-08 18:01:48,044 - T2 committed
+INFO - 2017-12-08 18:01:48,044 - Clearing locks for T2 variable: x3
+INFO - 2017-12-08 18:01:48,044 - Clearing locks for T2 variable: x8
+INFO - 2017-12-08 18:01:48,044 - Site 2 recovered
+INFO - 2017-12-08 18:01:48,044 - === Site 1 ===
+INFO - 2017-12-08 18:01:48,044 - x8:  88 at site 1
+INFO - 2017-12-08 18:01:48,044 - All other variables have same initial value
+INFO - 2017-12-08 18:01:48,045 - === Site 2 ===
+INFO - 2017-12-08 18:01:48,045 - x1: 10 (available at site 2 for reading as it is the only copy or has been written after recovery)
+INFO - 2017-12-08 18:01:48,045 - x2: is not available for reading
+INFO - 2017-12-08 18:01:48,045 - x4: is not available for reading
+INFO - 2017-12-08 18:01:48,045 - x6: is not available for reading
+INFO - 2017-12-08 18:01:48,045 - x8: is not available for reading
+INFO - 2017-12-08 18:01:48,045 - x10: is not available for reading
+INFO - 2017-12-08 18:01:48,045 - x11: 110 (available at site 2 for reading as it is the only copy or has been written after recovery)
+INFO - 2017-12-08 18:01:48,045 - x12: is not available for reading
+INFO - 2017-12-08 18:01:48,045 - x14: is not available for reading
+INFO - 2017-12-08 18:01:48,045 - x16: is not available for reading
+INFO - 2017-12-08 18:01:48,045 - x18: is not available for reading
+INFO - 2017-12-08 18:01:48,045 - x20: is not available for reading
+INFO - 2017-12-08 18:01:48,045 - === Site 3 ===
+INFO - 2017-12-08 18:01:48,045 - x8:  88 at site 3
+INFO - 2017-12-08 18:01:48,046 - All other variables have same initial value
+INFO - 2017-12-08 18:01:48,046 - === Site 4 ===
+INFO - 2017-12-08 18:01:48,046 - x8:  88 at site 4
+INFO - 2017-12-08 18:01:48,046 - All other variables have same initial value
+INFO - 2017-12-08 18:01:48,046 - === Site 5 ===
+INFO - 2017-12-08 18:01:48,046 - x8:  88 at site 5
+INFO - 2017-12-08 18:01:48,046 - All other variables have same initial value
+INFO - 2017-12-08 18:01:48,046 - === Site 6 ===
+INFO - 2017-12-08 18:01:48,046 - x8:  88 at site 6
+INFO - 2017-12-08 18:01:48,046 - All other variables have same initial value
+INFO - 2017-12-08 18:01:48,046 - === Site 7 ===
+INFO - 2017-12-08 18:01:48,046 - x8:  88 at site 7
+INFO - 2017-12-08 18:01:48,046 - All other variables have same initial value
+INFO - 2017-12-08 18:01:48,046 - === Site 8 ===
+INFO - 2017-12-08 18:01:48,046 - x8:  88 at site 8
+INFO - 2017-12-08 18:01:48,046 - All other variables have same initial value
+INFO - 2017-12-08 18:01:48,046 - === Site 9 ===
+INFO - 2017-12-08 18:01:48,046 - x8:  88 at site 9
+INFO - 2017-12-08 18:01:48,047 - All other variables have same initial value
+INFO - 2017-12-08 18:01:48,047 - === Site 10 ===
+INFO - 2017-12-08 18:01:48,047 - x8:  88 at site 10
+INFO - 2017-12-08 18:01:48,047 - All other variables have same initial value

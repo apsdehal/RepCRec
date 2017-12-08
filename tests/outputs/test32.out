@@ -1,113 +1,113 @@
-INFO - 2017-12-07 21:32:56,622 - Starting T10
-INFO - 2017-12-07 21:32:56,622 - Starting T3
-INFO - 2017-12-07 21:32:56,622 - Starting T5
-INFO - 2017-12-07 21:32:56,622 - Starting T4
-INFO - 2017-12-07 21:32:56,622 - Starting T1
-INFO - 2017-12-07 21:32:56,623 - Starting T8
-INFO - 2017-12-07 21:32:56,623 - Starting T6
-INFO - 2017-12-07 21:32:56,623 - Starting T7
-INFO - 2017-12-07 21:32:56,623 - Starting T9
-INFO - 2017-12-07 21:32:56,623 - Starting T2
-INFO - 2017-12-07 21:32:56,624 - T1 got read lock on x1 having value 10
-INFO - 2017-12-07 21:32:56,624 - T2 got read lock on x2 having value 20
-INFO - 2017-12-07 21:32:56,624 - T3 got read lock on x3 having value 30
-INFO - 2017-12-07 21:32:56,624 - T4 got read lock on x4 having value 40
-INFO - 2017-12-07 21:32:56,625 - T5 got read lock on x5 having value 50
-INFO - 2017-12-07 21:32:56,625 - T6 got read lock on x6 having value 60
-INFO - 2017-12-07 21:32:56,625 - T7 got read lock on x7 having value 70
-INFO - 2017-12-07 21:32:56,625 - T8 got read lock on x8 having value 80
-INFO - 2017-12-07 21:32:56,626 - T9 got read lock on x9 having value 90
-INFO - 2017-12-07 21:32:56,626 - T10 got read lock on x10 having value 100
-INFO - 2017-12-07 21:32:56,626 - T1 is blocked for a write lock by T2 on x2
-INFO - 2017-12-07 21:32:56,627 - T10 got read lock on x9 having value 90
-INFO - 2017-12-07 21:32:56,627 - T3 got read lock on x1 having value 10
-INFO - 2017-12-07 21:32:56,627 - T8 got read lock on x6 having value 60
-INFO - 2017-12-07 21:32:56,628 - T7 is blocked for a write lock by T8 on x8
-INFO - 2017-12-07 21:32:56,628 - T2 is blocked for a write lock by T3 on x3
-INFO - 2017-12-07 21:32:56,628 - T8 is blocked for a write lock by T9 on x9
-INFO - 2017-12-07 21:32:56,628 - T8 is blocked for a write lock by T10 on x9
-INFO - 2017-12-07 21:32:56,629 - T3 is blocked for a write lock by T4 on x4
-INFO - 2017-12-07 21:32:56,629 - T4 is blocked for a write lock by T5 on x5
-INFO - 2017-12-07 21:32:56,629 - T5 is blocked for a write lock by T1 on x1
-INFO - 2017-12-07 21:32:56,629 - T5 is blocked for a write lock by T3 on x1
-INFO - 2017-12-07 21:32:56,630 - T2 aborted as it is youngest in a deadlock
-INFO - 2017-12-07 21:32:56,630 - Clearing locks for T2 variable: x2
-INFO - 2017-12-07 21:32:56,630 - T4 aborted as it is youngest in a deadlock
-INFO - 2017-12-07 21:32:56,630 - Clearing locks for T4 variable: x4
-INFO - 2017-12-07 21:32:56,630 - T1 got write lock on x2
-INFO - 2017-12-07 21:32:56,631 - T3 got write lock on x4
-INFO - 2017-12-07 21:32:56,631 - T9 is blocked for a write lock by T10 on x10
-INFO - 2017-12-07 21:32:56,631 - T6 is blocked for a write lock by T7 on x7
-INFO - 2017-12-07 21:32:56,632 - T10 is blocked for a write lock by T6 on x6
-INFO - 2017-12-07 21:32:56,632 - T10 is blocked for a write lock by T8 on x6
-INFO - 2017-12-07 21:32:56,632 - T9 aborted as it is youngest in a deadlock
-INFO - 2017-12-07 21:32:56,632 - Clearing locks for T9 variable: x9
-INFO - 2017-12-07 21:32:56,632 - T7 aborted as it is youngest in a deadlock
-INFO - 2017-12-07 21:32:56,632 - Clearing locks for T7 variable: x7
-INFO - 2017-12-07 21:32:56,633 - T8 aborted as it is youngest in a deadlock
-INFO - 2017-12-07 21:32:56,633 - Clearing locks for T8 variable: x6
-INFO - 2017-12-07 21:32:56,633 - Clearing locks for T8 variable: x8
-INFO - 2017-12-07 21:32:56,633 - T6 got write lock on x7
-INFO - 2017-12-07 21:32:56,633 - T10 read the value 100 of variable x10
-INFO - 2017-12-07 21:32:56,633 - T10 read the value 90 of variable x9
-INFO - 2017-12-07 21:32:56,633 - T10 committed
-INFO - 2017-12-07 21:32:56,634 - Clearing locks for T10 variable: x9
-INFO - 2017-12-07 21:32:56,634 - Clearing locks for T10 variable: x10
-INFO - 2017-12-07 21:32:56,635 - T6 read the value 60 of variable x6
-INFO - 2017-12-07 21:32:56,635 - T6 committed
-INFO - 2017-12-07 21:32:56,635 - Clearing locks for T6 variable: x6
-INFO - 2017-12-07 21:32:56,635 - Clearing locks for T6 variable: x7
-INFO - 2017-12-07 21:32:56,635 - T1 read the value 10 of variable x1
-INFO - 2017-12-07 21:32:56,636 - T1 committed
-INFO - 2017-12-07 21:32:56,636 - Clearing locks for T1 variable: x1
-INFO - 2017-12-07 21:32:56,636 - Clearing locks for T1 variable: x2
-INFO - 2017-12-07 21:32:56,636 - T5 read the value 50 of variable x5
-INFO - 2017-12-07 21:32:56,636 - T5 committed
-INFO - 2017-12-07 21:32:56,636 - Clearing locks for T5 variable: x5
-INFO - 2017-12-07 21:32:56,637 - T3 read the value 30 of variable x3
-INFO - 2017-12-07 21:32:56,637 - T3 read the value 10 of variable x1
-INFO - 2017-12-07 21:32:56,637 - T3 committed
-INFO - 2017-12-07 21:32:56,637 - Clearing locks for T3 variable: x1
-INFO - 2017-12-07 21:32:56,638 - Clearing locks for T3 variable: x3
-INFO - 2017-12-07 21:32:56,638 - Clearing locks for T3 variable: x4
-INFO - 2017-12-07 21:32:56,638 - === Site 1 ===
-INFO - 2017-12-07 21:32:56,638 - x2:  12 at site 1
-INFO - 2017-12-07 21:32:56,638 - x4:  34 at site 1
-INFO - 2017-12-07 21:32:56,638 - All other variables have same initial value
-INFO - 2017-12-07 21:32:56,638 - === Site 2 ===
-INFO - 2017-12-07 21:32:56,638 - x2:  12 at site 2
-INFO - 2017-12-07 21:32:56,638 - x4:  34 at site 2
-INFO - 2017-12-07 21:32:56,639 - All other variables have same initial value
-INFO - 2017-12-07 21:32:56,639 - === Site 3 ===
-INFO - 2017-12-07 21:32:56,639 - x2:  12 at site 3
-INFO - 2017-12-07 21:32:56,639 - x4:  34 at site 3
-INFO - 2017-12-07 21:32:56,639 - All other variables have same initial value
-INFO - 2017-12-07 21:32:56,639 - === Site 4 ===
-INFO - 2017-12-07 21:32:56,639 - x2:  12 at site 4
-INFO - 2017-12-07 21:32:56,639 - x4:  34 at site 4
-INFO - 2017-12-07 21:32:56,639 - All other variables have same initial value
-INFO - 2017-12-07 21:32:56,639 - === Site 5 ===
-INFO - 2017-12-07 21:32:56,639 - x2:  12 at site 5
-INFO - 2017-12-07 21:32:56,639 - x4:  34 at site 5
-INFO - 2017-12-07 21:32:56,640 - All other variables have same initial value
-INFO - 2017-12-07 21:32:56,640 - === Site 6 ===
-INFO - 2017-12-07 21:32:56,640 - x2:  12 at site 6
-INFO - 2017-12-07 21:32:56,640 - x4:  34 at site 6
-INFO - 2017-12-07 21:32:56,640 - All other variables have same initial value
-INFO - 2017-12-07 21:32:56,640 - === Site 7 ===
-INFO - 2017-12-07 21:32:56,640 - x2:  12 at site 7
-INFO - 2017-12-07 21:32:56,640 - x4:  34 at site 7
-INFO - 2017-12-07 21:32:56,640 - All other variables have same initial value
-INFO - 2017-12-07 21:32:56,641 - === Site 8 ===
-INFO - 2017-12-07 21:32:56,641 - x2:  12 at site 8
-INFO - 2017-12-07 21:32:56,641 - x4:  34 at site 8
-INFO - 2017-12-07 21:32:56,641 - x7:  67 at site 8
-INFO - 2017-12-07 21:32:56,641 - All other variables have same initial value
-INFO - 2017-12-07 21:32:56,641 - === Site 9 ===
-INFO - 2017-12-07 21:32:56,641 - x2:  12 at site 9
-INFO - 2017-12-07 21:32:56,641 - x4:  34 at site 9
-INFO - 2017-12-07 21:32:56,641 - All other variables have same initial value
-INFO - 2017-12-07 21:32:56,641 - === Site 10 ===
-INFO - 2017-12-07 21:32:56,642 - x2:  12 at site 10
-INFO - 2017-12-07 21:32:56,642 - x4:  34 at site 10
-INFO - 2017-12-07 21:32:56,642 - All other variables have same initial value
+INFO - 2017-12-08 18:03:19,610 - Starting T10
+INFO - 2017-12-08 18:03:19,610 - Starting T3
+INFO - 2017-12-08 18:03:19,610 - Starting T5
+INFO - 2017-12-08 18:03:19,610 - Starting T4
+INFO - 2017-12-08 18:03:19,611 - Starting T1
+INFO - 2017-12-08 18:03:19,611 - Starting T8
+INFO - 2017-12-08 18:03:19,611 - Starting T6
+INFO - 2017-12-08 18:03:19,611 - Starting T7
+INFO - 2017-12-08 18:03:19,611 - Starting T9
+INFO - 2017-12-08 18:03:19,611 - Starting T2
+INFO - 2017-12-08 18:03:19,612 - T1 got read lock on x1 having value 10
+INFO - 2017-12-08 18:03:19,612 - T2 got read lock on x2 having value 20
+INFO - 2017-12-08 18:03:19,612 - T3 got read lock on x3 having value 30
+INFO - 2017-12-08 18:03:19,612 - T4 got read lock on x4 having value 40
+INFO - 2017-12-08 18:03:19,613 - T5 got read lock on x5 having value 50
+INFO - 2017-12-08 18:03:19,613 - T6 got read lock on x6 having value 60
+INFO - 2017-12-08 18:03:19,613 - T7 got read lock on x7 having value 70
+INFO - 2017-12-08 18:03:19,613 - T8 got read lock on x8 having value 80
+INFO - 2017-12-08 18:03:19,614 - T9 got read lock on x9 having value 90
+INFO - 2017-12-08 18:03:19,614 - T10 got read lock on x10 having value 100
+INFO - 2017-12-08 18:03:19,614 - T1 is blocked for a write lock by T2 on x2
+INFO - 2017-12-08 18:03:19,615 - T10 got read lock on x9 having value 90
+INFO - 2017-12-08 18:03:19,616 - T3 got read lock on x1 having value 10
+INFO - 2017-12-08 18:03:19,616 - T8 got read lock on x6 having value 60
+INFO - 2017-12-08 18:03:19,616 - T7 is blocked for a write lock by T8 on x8
+INFO - 2017-12-08 18:03:19,617 - T2 is blocked for a write lock by T3 on x3
+INFO - 2017-12-08 18:03:19,617 - T8 is blocked for a write lock by T9 on x9
+INFO - 2017-12-08 18:03:19,617 - T8 is blocked for a write lock by T10 on x9
+INFO - 2017-12-08 18:03:19,618 - T3 is blocked for a write lock by T4 on x4
+INFO - 2017-12-08 18:03:19,618 - T4 is blocked for a write lock by T5 on x5
+INFO - 2017-12-08 18:03:19,618 - T5 is blocked for a write lock by T1 on x1
+INFO - 2017-12-08 18:03:19,619 - T5 is blocked for a write lock by T3 on x1
+INFO - 2017-12-08 18:03:19,619 - T2 aborted as it is youngest in a deadlock
+INFO - 2017-12-08 18:03:19,619 - Clearing locks for T2 variable: x2
+INFO - 2017-12-08 18:03:19,619 - T4 aborted as it is youngest in a deadlock
+INFO - 2017-12-08 18:03:19,620 - Clearing locks for T4 variable: x4
+INFO - 2017-12-08 18:03:19,620 - T1 got write lock on x2
+INFO - 2017-12-08 18:03:19,620 - T3 got write lock on x4
+INFO - 2017-12-08 18:03:19,621 - T9 is blocked for a write lock by T10 on x10
+INFO - 2017-12-08 18:03:19,621 - T6 is blocked for a write lock by T7 on x7
+INFO - 2017-12-08 18:03:19,622 - T10 is blocked for a write lock by T6 on x6
+INFO - 2017-12-08 18:03:19,622 - T10 is blocked for a write lock by T8 on x6
+INFO - 2017-12-08 18:03:19,623 - T9 aborted as it is youngest in a deadlock
+INFO - 2017-12-08 18:03:19,623 - Clearing locks for T9 variable: x9
+INFO - 2017-12-08 18:03:19,623 - T7 aborted as it is youngest in a deadlock
+INFO - 2017-12-08 18:03:19,623 - Clearing locks for T7 variable: x7
+INFO - 2017-12-08 18:03:19,624 - T8 aborted as it is youngest in a deadlock
+INFO - 2017-12-08 18:03:19,624 - Clearing locks for T8 variable: x6
+INFO - 2017-12-08 18:03:19,624 - Clearing locks for T8 variable: x8
+INFO - 2017-12-08 18:03:19,624 - T6 got write lock on x7
+INFO - 2017-12-08 18:03:19,625 - T10 read the value 100 of variable x10
+INFO - 2017-12-08 18:03:19,625 - T10 read the value 90 of variable x9
+INFO - 2017-12-08 18:03:19,625 - T10 committed
+INFO - 2017-12-08 18:03:19,625 - Clearing locks for T10 variable: x10
+INFO - 2017-12-08 18:03:19,625 - Clearing locks for T10 variable: x9
+INFO - 2017-12-08 18:03:19,627 - T6 read the value 60 of variable x6
+INFO - 2017-12-08 18:03:19,627 - T6 committed
+INFO - 2017-12-08 18:03:19,628 - Clearing locks for T6 variable: x6
+INFO - 2017-12-08 18:03:19,628 - Clearing locks for T6 variable: x7
+INFO - 2017-12-08 18:03:19,628 - T1 read the value 10 of variable x1
+INFO - 2017-12-08 18:03:19,628 - T1 committed
+INFO - 2017-12-08 18:03:19,629 - Clearing locks for T1 variable: x1
+INFO - 2017-12-08 18:03:19,629 - Clearing locks for T1 variable: x2
+INFO - 2017-12-08 18:03:19,629 - T5 read the value 50 of variable x5
+INFO - 2017-12-08 18:03:19,629 - T5 committed
+INFO - 2017-12-08 18:03:19,629 - Clearing locks for T5 variable: x5
+INFO - 2017-12-08 18:03:19,630 - T3 read the value 30 of variable x3
+INFO - 2017-12-08 18:03:19,631 - T3 read the value 10 of variable x1
+INFO - 2017-12-08 18:03:19,631 - T3 committed
+INFO - 2017-12-08 18:03:19,631 - Clearing locks for T3 variable: x1
+INFO - 2017-12-08 18:03:19,631 - Clearing locks for T3 variable: x3
+INFO - 2017-12-08 18:03:19,631 - Clearing locks for T3 variable: x4
+INFO - 2017-12-08 18:03:19,631 - === Site 1 ===
+INFO - 2017-12-08 18:03:19,632 - x2:  12 at site 1
+INFO - 2017-12-08 18:03:19,632 - x4:  34 at site 1
+INFO - 2017-12-08 18:03:19,632 - All other variables have same initial value
+INFO - 2017-12-08 18:03:19,632 - === Site 2 ===
+INFO - 2017-12-08 18:03:19,632 - x2:  12 at site 2
+INFO - 2017-12-08 18:03:19,632 - x4:  34 at site 2
+INFO - 2017-12-08 18:03:19,632 - All other variables have same initial value
+INFO - 2017-12-08 18:03:19,632 - === Site 3 ===
+INFO - 2017-12-08 18:03:19,632 - x2:  12 at site 3
+INFO - 2017-12-08 18:03:19,632 - x4:  34 at site 3
+INFO - 2017-12-08 18:03:19,633 - All other variables have same initial value
+INFO - 2017-12-08 18:03:19,633 - === Site 4 ===
+INFO - 2017-12-08 18:03:19,633 - x2:  12 at site 4
+INFO - 2017-12-08 18:03:19,633 - x4:  34 at site 4
+INFO - 2017-12-08 18:03:19,633 - All other variables have same initial value
+INFO - 2017-12-08 18:03:19,633 - === Site 5 ===
+INFO - 2017-12-08 18:03:19,633 - x2:  12 at site 5
+INFO - 2017-12-08 18:03:19,633 - x4:  34 at site 5
+INFO - 2017-12-08 18:03:19,633 - All other variables have same initial value
+INFO - 2017-12-08 18:03:19,633 - === Site 6 ===
+INFO - 2017-12-08 18:03:19,634 - x2:  12 at site 6
+INFO - 2017-12-08 18:03:19,634 - x4:  34 at site 6
+INFO - 2017-12-08 18:03:19,634 - All other variables have same initial value
+INFO - 2017-12-08 18:03:19,634 - === Site 7 ===
+INFO - 2017-12-08 18:03:19,634 - x2:  12 at site 7
+INFO - 2017-12-08 18:03:19,634 - x4:  34 at site 7
+INFO - 2017-12-08 18:03:19,634 - All other variables have same initial value
+INFO - 2017-12-08 18:03:19,634 - === Site 8 ===
+INFO - 2017-12-08 18:03:19,634 - x2:  12 at site 8
+INFO - 2017-12-08 18:03:19,634 - x4:  34 at site 8
+INFO - 2017-12-08 18:03:19,635 - x7:  67 at site 8
+INFO - 2017-12-08 18:03:19,635 - All other variables have same initial value
+INFO - 2017-12-08 18:03:19,635 - === Site 9 ===
+INFO - 2017-12-08 18:03:19,635 - x2:  12 at site 9
+INFO - 2017-12-08 18:03:19,635 - x4:  34 at site 9
+INFO - 2017-12-08 18:03:19,635 - All other variables have same initial value
+INFO - 2017-12-08 18:03:19,635 - === Site 10 ===
+INFO - 2017-12-08 18:03:19,635 - x2:  12 at site 10
+INFO - 2017-12-08 18:03:19,635 - x4:  34 at site 10
+INFO - 2017-12-08 18:03:19,635 - All other variables have same initial value
