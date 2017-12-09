@@ -52,15 +52,6 @@ class IO:
 
         return instructions
 
-    def print_all_variables(self, data_table):
-        return None
-
-    def print_variable(self, variable):
-        return None
-
-    def print_site(self, site):
-        return None
-
     def run(self):
 
         instructions = self.get_next_instruction()

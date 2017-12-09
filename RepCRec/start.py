@@ -18,7 +18,18 @@ from tornado import gen
 
 
 class Main:
+    """
+    Main class representing the whole project.
+    Job is to start site manager, transaction manager and IO.
 
+    Args:
+        file_path: File containing instructions
+        num_sites: Number of sites
+        num_variables: Number of variables
+        sites: Whether to bind sites to port
+        out_file: If out_file is present, logs will be written to it
+        stdin: Whether to take input from stdin
+    """
     @plac.annotations(
         file_path=("File name, pass anything in case of stdin",
                    "positional", None, str),
@@ -58,12 +69,18 @@ class Main:
 
     @gen.coroutine
     def run_coroutine(self):
+        """
+        Runs sites and binds them to port. Then, starts all the IO
+        """
         if self.sites:
             self.site_manager.start()
 
         self.io.run()
 
     def run(self):
+        """
+        Directly starts IO
+        """
         if self.sites:
             self.site_manager.start()
 
