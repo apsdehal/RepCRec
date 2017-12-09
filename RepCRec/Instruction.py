@@ -7,6 +7,12 @@ import re
 
 
 class Instruction:
+    """
+    This class represents an instruction from the ipput file
+
+    Args:
+        instruction: Raw string which is to properly processed
+    """
     PARAM_MATCHER = "\((.*?)\)"
 
     def __init__(self, instruction):
@@ -22,7 +28,19 @@ class Instruction:
         # print(self.params)
 
     def get_params(self):
+        """
+        Get params of this instruction
+
+        Returns:
+            List of params of this instruction
+        """
         return self.params
 
     def get_instruction_type(self):
+        """
+        Get instruction type of this instruction
+
+        Returns:
+            Instruction type of the instruction
+        """
         return self.instruction_type
