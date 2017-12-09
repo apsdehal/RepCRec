@@ -207,7 +207,7 @@ class SiteManager:
 
                 for variable in variables:
 
-                    if variable.index % 2 == 1:
+                    if variable.name in site.recovered_variables:
 
                         if var is not None and variable.name == var:
                             return variable.value
