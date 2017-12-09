@@ -246,8 +246,6 @@ class TransactionManager:
                 transaction.set_status(TransactionStatus.BLOCKED)
 
                 self.current_time += 1
-                # if transaction_name not in self.blocked_transactions:
-                #     self.blocked_transactions[transaction_name] = []
 
                 self.blocked_transactions[self.current_time][
                     transaction_name] = blocking_txn_tuple
@@ -347,11 +345,22 @@ class TransactionManager:
 
         else:
 
-            if self.lock_table.is_locked_by_transaction(transaction, variable,
-                                                        LockType.READ) or \
-                    self.lock_table.is_locked_by_transaction(transaction,
-                                                             variable,
-                                                             LockType.WRITE):
+            if self.lock_table.is_locked_by_transaction(transaction, variable, LockType.WRITE):
+
+                val = transaction.uncommitted_variables[variable]
+
+                log.info(transaction.name + " got read lock on " +
+                         variable + " having value " + str(val))
+
+                if variable not in transaction.read_variables:
+                    transaction.read_variables[variable] = list()
+
+                transaction.read_variables[variable].append(val)
+
+                return
+
+            if self.lock_table.is_locked_by_transaction(transaction, variable, LockType.READ):
+
                 self.lock_table.set_lock(transaction, LockType.READ, variable)
                 log.info(transaction.name +
                          " already has a read lock on " + variable)
@@ -598,14 +607,10 @@ class TransactionManager:
 
     def get_squashed_blocked_transactions(self):
         """
-        Method responsible for resolving deadlock after
-        it has been detected by aborting
-        the youngest transaction involved.
+        Method responsible for squashing the default dict
+        self.blocked_transactions (based on current time as key)
+        into a default dict based on transaction name as key.
 
-        Args:
-            transaction_list (list) : list of all transactions visited
-
-            index (int) : index of the first transaction involved in deadlock
         """
 
         squashed_blocked_transactions = defaultdict(list)
@@ -621,14 +626,9 @@ class TransactionManager:
 
     def get_squashed_waiting_transactions(self):
         """
-        Method responsible for resolving deadlock after
-        it has been detected by aborting
-        the youngest transaction involved.
-
-        Args:
-            transaction_list (list) : list of all transactions visited
-
-            index (int) : index of the first transaction involved in deadlock
+        Method responsible for squashing the default dict
+        self.waiting_transactions (based on current time as key)
+        into a default dict based on transaction name as key.
         """
 
         squashed_waiting_transactions = defaultdict(list)
@@ -645,6 +645,12 @@ class TransactionManager:
         return squashed_waiting_transactions
 
     def blocked_to_waiting(self):
+        """
+        Method responsible for trying to resolve blocked transactions
+        by checking if the transaction blocking them has been
+        committed or aborted. If so, it changes the status of the blocked
+        transaction to waiting.
+        """
 
         to_pop = list()
 
@@ -682,6 +688,19 @@ class TransactionManager:
 
                     if len(squashed_blocked_transactions[key]) == 0:
 
+                        flag = 0
+                        squashed_waiting_transactions = self.get_squashed_waiting_transactions()
+
+                        if key in squashed_waiting_transactions:
+
+                            for bl_tuple in squashed_waiting_transactions[key]:
+
+                                if bl_tuple == blocked_tuple[1:]:
+                                    flag = 1
+                                    break
+                        if flag:
+                            continue
+
                         self.waiting_transactions[self.current_time][
                             key] = blocked_tuple[1:]
                         transaction = self.transaction_map[key]
@@ -691,6 +710,13 @@ class TransactionManager:
             self.blocked_transactions[key[0]].pop(key[1])
 
     def abort(self, name):
+        """
+        Method responsible for aborting transactions. It clears
+        the transaction from blocked and waiting dicts.
+
+        Args:
+            name (str): name of the transaction to be aborted
+        """
 
         to_pop_blocked = list()
         to_pop_waiting = list()
@@ -722,6 +748,15 @@ class TransactionManager:
         return
 
     def clear_locks(self, transaction):
+        """
+        Method responsible for clearing locks of transactions. It clears
+        the transaction locks in the global lock table as well as the
+        lock tables controlled by site manager.
+
+        Args:
+            transaction (Object of class Transaction): transaction whose locks have to be cleared
+        """
+
         lock_map = self.site_manager.get_set_locks().get_lock_map()
 
         for var_name in sorted(list(lock_map)):
@@ -737,6 +772,12 @@ class TransactionManager:
                                  " variable: " + var_name)
 
     def try_waiting(self):
+        """
+        Method responsible for getting locks for waiting transaactions.
+        Traverses through the waiting transactions and tries to get
+        locks for them, to change their status to running.
+
+        """
 
         to_pop = list()
 
@@ -767,6 +808,13 @@ class TransactionManager:
             self.waiting_transactions[key[0]].pop(key[1])
 
     def commit_transaction(self, name):
+        """
+        Method responsible for commiting transactions when we
+        recieve an end instruction. It traverses through the list
+        of uncommitted variables and writes the values on the
+        respective sites.
+
+        """
 
         status = self.transaction_map[name].get_status()
 
@@ -798,6 +846,15 @@ class TransactionManager:
         self.transaction_map[name].set_status(TransactionStatus.COMMITTED)
 
     def end(self, params):
+        """
+        Method called when we recieve an end instruction.
+        Calls commit_transaction and clears the transaction
+        from blocked and waiting dicts. Also clears locks
+        held by transaction.
+
+        Args:
+            params(list) : contains the transaction name to be committed
+        """
 
         status = self.transaction_map[params[0]].get_status()
 
