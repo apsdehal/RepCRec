@@ -13,7 +13,6 @@ class IO:
 
     def __init__(self, file_name, site_manager, transaction_manager,
                  lock_table, stdin=False):
-        # print("Hello")
 
         self.file_name = file_name
         self.stdin = stdin
@@ -28,7 +27,6 @@ class IO:
             line = next(self.line_generator, None)
         else:
             line = input().strip()
-        # print(line)
 
         if line is None:
             return line

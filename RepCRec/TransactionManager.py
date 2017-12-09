@@ -85,7 +85,6 @@ class TransactionManager:
             self.write_request(params)
 
         elif instruction.get_instruction_type() == END_FUNC:
-            # print(params[0])
             self.end(params)
         else:
             log.info("We have a problem")
@@ -180,11 +179,13 @@ class TransactionManager:
 
             transaction.uncommitted_variables[variable] = value
 
-            squashed_waiting_transactions = self.get_squashed_waiting_transactions()
+            squashed_waiting_transactions = \
+                self.get_squashed_waiting_transactions()
 
             if transaction.name in squashed_waiting_transactions:
 
-                for waiting_tuple in squashed_waiting_transactions[transaction.name]:
+                for waiting_tuple in squashed_waiting_transactions[
+                        transaction.name]:
 
                     if waiting_tuple[1] != variable:
                         return
@@ -197,20 +198,14 @@ class TransactionManager:
                                  variable,
                                  value)
 
-            squashed_waiting_transactions = self.get_squashed_waiting_transactions()
+            squashed_waiting_transactions = \
+                self.get_squashed_waiting_transactions()
 
             if transaction.name in squashed_waiting_transactions:
 
-                if waiting_txn_tuple in squashed_waiting_transactions[transaction.name]:
+                if waiting_txn_tuple in squashed_waiting_transactions[
+                        transaction.name]:
                     return
-
-            # for time in list(self.waiting_transactions):
-
-            #     for t_name in self.waiting_transactions[time]:
-
-            #         if t_name == transaction.name and \
-            #                 self.waiting_transactions[time][t_name] == waiting_txn_tuple:
-            #             return
 
             log.info(transaction.name + " is waiting on " + variable)
 
@@ -233,11 +228,13 @@ class TransactionManager:
                                       variable,
                                       value)
 
-                squashed_blocking_transactions = self.get_squashed_blocked_transactions()
+                squashed_blocking_transactions = \
+                    self.get_squashed_blocked_transactions()
 
                 if transaction.name in squashed_blocking_transactions:
 
-                    if blocking_txn_tuple in squashed_blocking_transactions[transaction.name]:
+                    if blocking_txn_tuple in squashed_blocking_transactions[
+                            transaction.name]:
                         return
 
                 log.info(transaction.name +
@@ -280,11 +277,13 @@ class TransactionManager:
             transaction.read_variables[
                 variable].append(transaction.variable_values[variable])
 
-            squashed_waiting_transactions = self.get_squashed_waiting_transactions()
+            squashed_waiting_transactions = \
+                self.get_squashed_waiting_transactions()
 
             if transaction.name in squashed_waiting_transactions:
 
-                for waiting_tuple in squashed_waiting_transactions[transaction.name]:
+                for waiting_tuple in squashed_waiting_transactions[
+                        transaction.name]:
 
                     if waiting_tuple[1] != variable:
                         return
@@ -295,11 +294,13 @@ class TransactionManager:
 
             waiting_txn = (InstructionType.READ_ONLY, variable)
 
-            squashed_waiting_transactions = self.get_squashed_waiting_transactions()
+            squashed_waiting_transactions = \
+                self.get_squashed_waiting_transactions()
 
             if transaction_name in squashed_waiting_transactions:
 
-                if waiting_txn_tuple in squashed_waiting_transactions[transaction_name]:
+                if waiting_txn_tuple in squashed_waiting_transactions[
+                        transaction_name]:
                     return
 
             transaction.set_status(TransactionStatus.WAITING)
@@ -345,7 +346,8 @@ class TransactionManager:
 
         else:
 
-            if self.lock_table.is_locked_by_transaction(transaction, variable, LockType.WRITE):
+            if self.lock_table.is_locked_by_transaction(transaction, variable,
+                                                        LockType.WRITE):
 
                 val = transaction.uncommitted_variables[variable]
 
@@ -359,7 +361,8 @@ class TransactionManager:
 
                 return
 
-            if self.lock_table.is_locked_by_transaction(transaction, variable, LockType.READ):
+            if self.lock_table.is_locked_by_transaction(transaction, variable,
+                                                        LockType.READ):
 
                 self.lock_table.set_lock(transaction, LockType.READ, variable)
                 log.info(transaction.name +
@@ -436,11 +439,13 @@ class TransactionManager:
                 self.lock_table.set_lock(transaction,
                                          LockType.READ, variable)
 
-                squashed_waiting_transactions = self.get_squashed_waiting_transactions()
+                squashed_waiting_transactions = \
+                    self.get_squashed_waiting_transactions()
 
                 if transaction.name in squashed_waiting_transactions:
 
-                    for waiting_tuple in squashed_waiting_transactions[transaction.name]:
+                    for waiting_tuple in squashed_waiting_transactions[
+                            transaction.name]:
 
                         if waiting_tuple[1] != variable:
                             return
@@ -451,11 +456,13 @@ class TransactionManager:
 
                 waiting_txn_tuple = (InstructionType.READ, variable)
 
-                squashed_waiting_transactions = self.get_squashed_waiting_transactions()
+                squashed_waiting_transactions = \
+                    self.get_squashed_waiting_transactions()
 
                 if transaction.name in squashed_waiting_transactions:
 
-                    if waiting_txn_tuple in squashed_waiting_transactions[transaction.name]:
+                    if waiting_txn_tuple in squashed_waiting_transactions[
+                            transaction.name]:
                         return
 
                 log.info(transaction.name + " is waiting on " + variable)
@@ -467,7 +474,8 @@ class TransactionManager:
 
             else:
 
-                for lock in self.site_manager.get_set_locks().lock_map[variable]:
+                for lock in self.site_manager.get_set_locks().lock_map[
+                        variable]:
 
                     blocking_transaction = lock.transaction.name
 
@@ -478,19 +486,19 @@ class TransactionManager:
                                           InstructionType.READ,
                                           variable)
 
-                    squashed_blocking_transactions = self.get_squashed_blocked_transactions()
+                    squashed_blocking_transactions = \
+                        self.get_squashed_blocked_transactions()
 
                     if transaction.name in squashed_blocking_transactions:
 
-                        if blocking_txn_tuple in squashed_blocking_transactions[transaction.name]:
+                        if blocking_txn_tuple in \
+                                squashed_blocking_transactions[
+                                transaction.name]:
                             return
 
                     log.info(transaction.name + " is blocked by " +
                              blocking_transaction + " on " + variable)
                     transaction.set_status(TransactionStatus.BLOCKED)
-
-                    # if transaction_name not in self.blocked_transactions:
-                    #     self.blocked_transactions[transaction_name] = []
 
                     self.blocked_transactions[self.current_time][
                         transaction_name] = blocking_txn_tuple
@@ -689,7 +697,8 @@ class TransactionManager:
                     if len(squashed_blocked_transactions[key]) == 0:
 
                         flag = 0
-                        squashed_waiting_transactions = self.get_squashed_waiting_transactions()
+                        squashed_waiting_transactions = \
+                            self.get_squashed_waiting_transactions()
 
                         if key in squashed_waiting_transactions:
 
@@ -726,12 +735,9 @@ class TransactionManager:
             if name in self.blocked_transactions[time]:
 
                 to_pop_blocked.append((time, name))
-                # self.blocked_transactions[blocked_dict_key].pop(name)
 
         for key in to_pop_blocked:
             self.blocked_transactions[key[0]].pop(key[1])
-        # if name in self.waiting_transactions:
-        #     self.waiting_transactions.pop(name)
 
         for time in self.waiting_transactions.keys():
 
@@ -754,7 +760,8 @@ class TransactionManager:
         lock tables controlled by site manager.
 
         Args:
-            transaction (Object of class Transaction): transaction whose locks have to be cleared
+            transaction (Object of class Transaction): transaction whose
+                                                       locks have to be cleared
         """
 
         lock_map = self.site_manager.get_set_locks().get_lock_map()
@@ -863,7 +870,7 @@ class TransactionManager:
             return
 
         self.commit_transaction(params[0])
-        # print("Got here")
+
         log.info(params[0] + " committed")
         self.clear_locks(self.transaction_map[params[0]])
 
@@ -876,14 +883,12 @@ class TransactionManager:
         if params[0] in squashed_blocked_transactions:
 
             squashed_blocked_transactions.pop(params[0])
-            # self.blocked_transactions.pop(params[0])
 
             for blocked_dict_key in sorted(self.blocked_transactions.keys()):
 
                 if params[0] in self.blocked_transactions[blocked_dict_key]:
 
                     to_pop_blocked.append((blocked_dict_key, params[0]))
-                    # self.blocked_transactions[blocked_dict_key].pop(params[0])
 
             for key in to_pop_blocked:
                 self.blocked_transactions[key[0]].pop(key[1])

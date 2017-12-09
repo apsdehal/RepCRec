@@ -246,7 +246,6 @@ class SiteManager:
         lock_table = LockTable()
         lock_table.lock_map = locks
         return lock_table
-        # return locks
 
     def clear_locks(self, lock, variable_name):
         """
